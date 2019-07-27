@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>表单提交示例 - FormData</title>
+  </head>
+
+  <body>
+    <form name="login_form" action="" method="get">
+      ID：<input id="username" type="text" name="username" />
+      Password：<input id="password" type="password" name="password" />
+    </form>
+
+    <button id="btn-submit" onclick="beforeSubmit()">Submit</button>
+    <script type="text/javascript">
+      function beforeSubmit() {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+        if (username.length < 6 || password.length < 6) {
+          alert('格式不正确！');
+          return;
+        }
+        // 1.创建一个FormData对象，直接把我们的表单传进去  
+        var formData = new FormData(document.forms.namedItem("login_form"));
+        // 2.创建一个http请求对象
+        var xmlHttpRequest = new XMLHttpRequest();
+
+        xmlHttpRequest.open('get', '/main.html');
+
+        xmlHttpRequest.onload = function(resp) {
+          if (xmlHttpRequest.status == 200) {
+            alert('提交成功！');
+          } else {
+            alert('Error:' + xmlHttpRequest.status);
+          }
+        };
+        xmlHttpRequest.send(formData);
+      }
+    </script>
+  </body>
+</html>
