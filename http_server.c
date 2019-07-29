@@ -11,6 +11,7 @@
 #include <pthread.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include "threadpool.h"
 
 typedef struct sockaddr sockaddr;
 typedef struct sockaddr_in sockaddr_in;
@@ -392,7 +393,7 @@ void* ThreadEntry(void *arg){
   return NULL;
 }
 
-void HttpServerStart(const char *ip, short port)
+void HttpServerStart(short port)
 {
   //忽略掉写管道破裂信号，避免由于客户端在特殊情况下(eg: 等待服务器响应时间过长)而主动断开连接，从而
   //导致服务器向一个已经关闭的socket信道写数据，导致引发写管道破裂信号强制关闭HTTP服务器进程
@@ -409,7 +410,7 @@ void HttpServerStart(const char *ip, short port)
 
   sockaddr_in addr;
   addr.sin_family = AF_INET;
-  addr.sin_addr.s_addr = inet_addr(ip);
+  addr.sin_addr.s_addr = htonl(INADDR_ANY);
   addr.sin_port = htons(port);
   int ret = bind(listen_sock, (sockaddr*)&addr, sizeof(addr));
   if(ret < 0){
@@ -422,6 +423,8 @@ void HttpServerStart(const char *ip, short port)
     return;
   }
   printf("Server Start!\n");
+  threadpool_t pool;
+  threadpool_init(&pool, 2, 4);
   while(1){
     sockaddr_in peer;
     socklen_t len = sizeof(peer);
@@ -430,18 +433,22 @@ void HttpServerStart(const char *ip, short port)
       perror("accept");
       continue;
     }
-    pthread_t tid;
-    pthread_create(&tid, NULL, ThreadEntry, (void*)&new_sock); 
-    pthread_detach(tid);
+    if(-1 == threadpool_add_task(&pool, ThreadEntry, (void*)&new_sock)) {
+      printf("thread pool is full\n");
+    }
+    //pthread_t tid;
+    //pthread_create(&tid, NULL, ThreadEntry, (void*)&new_sock); 
+    //pthread_detach(tid);
   }
+  threadpool_destroy(&pool);
 }
 
 int main(int argc, char* argv[]) {
-  if(argc != 3) {
-    printf("Usage: ./http_server.c [IP] [port]");
+  if(argc != 2) {
+    printf("Usage: ./http_server [port]\n");
     return 1;
   }
-  HttpServerStart(argv[1], atoi(argv[2]));
+  HttpServerStart(atoi(argv[1]));
 
   return 0;
 }
