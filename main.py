@@ -10,6 +10,27 @@ import MySQLdb
 
 app = Flask(__name__)
 
+# 网站主页面
+# @app.route('/index')
+# def login():
+#     userName = request.values.get('name')
+#     toolName = request.values.get('tool_name')
+#     return render_template('index.html')
+
+# 登陆主界面
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/user/login', methods=['POST'])
+def user_login():
+    username = request.values.get('username')
+    password = request.values.get('password')
+    code = request.values.get('code')
+    # return jsonify(code=1, msg='登陆失败，请重试!')
+    return jsonify(code=0)
+
+# 注册主界面
 @app.route('/register')
 def register():
     return render_template('register.html')
@@ -28,7 +49,7 @@ def checkUsername():
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     # 拼接SQL语句
-    sql = ''
+    sql = "select dev_name from dev where dev_name = '" + username + "'"
     # 执行查询操作
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -37,5 +58,44 @@ def checkUsername():
     else:
         return jsonify(valid=True)
 
+# 注册和后端交互逻辑
+@app.route('/user/register', methods=['POST'])
+def user_register():
+    '''
+    业务逻辑：
+        1.从前端获取注册的各项信息
+        2.将各项信息插入到数据库相应表中
+        3.根据插入成功与否，给前端ajax返回相应的对象内容
+    '''
+    # 从前端获取数据
+    username = request.values.get('username') # 用户名 (string)
+    password = request.values.get('password') # 用户密码 (string)
+    workStatus = request.values.get('workStatus') # 工作状态 (int)
+    realName = request.values.get('realName') # 真实姓名 (string)
+    school = request.values.get('school') # 学校名 (string)
+    company = request.values.get('company') # 公司名 (string)
+    QQId = request.values.get('QQId') # 通讯软件账号 (string)
+    research = request.values.get('research') # 研究方向 (string)
+    education = request.values.get('education') # 教育水平 (string)
+    phone = request.values.get('phone') # 手机号 (string)
+    inviteCode = request.values.get('inviteCode') # 邀请码 (string)
+    # nation = request.values.get('nation') # 手机号所属区域 (int)
+
+    # # 连接MySQL数据库并获取到数据库句柄
+    # db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    # cursor = db.cursor()
+    # # 拼接SQL语句
+    # sql = ""
+    # # 执行插入操作
+    # cursor.execute(sql)
+    # result = cursor.fetchall()
+    # if result: # 如果登陆成功，code=0
+    #     return jsonify(code=0, msg="register OK")
+    # else:
+    #     return jsonify(code=1, msg="register Error") # TODO：暂时不考虑注册失败的原因，同意返回register Error
+    return jsonify(username, password, workStatus, realName, school, company, QQId, research, education, phone, inviteCode)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
+
