@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)https://www.tutorzzz.com/tutorzzz/orders/finishOrders -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title></title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<link rel="shortcut icon" href="https://www.tutorzzz.com/tutorzzz/orders/favicon.ico">
+	<link href="./bootstrap.min.css" rel="stylesheet">
+	<link href="./font-awesome.css" rel="stylesheet">
+	<link href="./bootstrap-table.min.css" rel="stylesheet">
+	<link href="./style.min.css" rel="stylesheet">
+	<link href="./jquery.treegrid.css" rel="stylesheet">
+	<!--summernote css -->
+	<link href="./summernote-0.8.8.css" rel="stylesheet">
+	<link href="./animate.css" rel="stylesheet">
+	<link href="./chosen.css" rel="stylesheet">
+	<link href="./style.css" rel="stylesheet">
+	<link href="./layui.css" rel="stylesheet">
+<link rel="stylesheet" href="./layer(1).css" id="layuicss-layer"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="col-sm-12">
+        <div class="ibox">
+            <div class="ibox-body">
+                <div class="fixed-table-toolbar">
+                    <div class="columns pull-right">
+                        <button class="btn btn-success" onclick="search()">查询</button>
+                    </div>
+                    <div class="columns pull-right col-md-2 nopadding">
+                        <input id="searchName" type="text" class="form-control" placeholder="">
+                    </div>
+                    <div class="columns pull-right col-md-1 nopadding">
+                        <select id="condition_id" style="background-color: grey;color: white;" class="form-control">
+                            <option value="-1">无</option>
+                            <option value="id">订单编号</option>
+                            <option value="title">标题</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="bars pull-left"></div><div class="columns columns-right btn-group pull-right"><button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新"><i class="glyphicon glyphicon-refresh icon-refresh"></i></button><button class="btn btn-default btn-outline" type="button" name="toggle" title="切换"><i class="glyphicon glyphicon-list-alt icon-list-alt"></i></button></div></div><div class="fixed-table-container" style="padding-bottom: 0px;"><div class="fixed-table-header" style="display: none;"><table></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 41px; display: none;">正在努力地加载数据中，请稍候……</div><table id="exampleTable" data-mobile-responsive="true" data-sort-class="table-active" data-sortable="true" class="table table-hover table-striped">
+                <thead><tr><th style="" data-field="id" tabindex="0"><div class="th-inner sortable both desc">订单编号</div><div class="fht-cell"></div></th><th style="" data-field="title" tabindex="0"><div class="th-inner sortable both">标题</div><div class="fht-cell"></div></th><th style="" data-field="publishTime" tabindex="0"><div class="th-inner sortable both">发布时间</div><div class="fht-cell"></div></th><th style="" data-field="dueTime" tabindex="0"><div class="th-inner sortable both">交付时间</div><div class="fht-cell"></div></th><th style="" data-field="orderTag" tabindex="0"><div class="th-inner sortable both">开发语言</div><div class="fht-cell"></div></th><th style="" data-field="requireType" tabindex="0"><div class="th-inner sortable both">需求类型</div><div class="fht-cell"></div></th><th style="" data-field="devPrice" tabindex="0"><div class="th-inner sortable both">开发价格</div><div class="fht-cell"></div></th><th style="" data-field="docFilePath" tabindex="0"><div class="th-inner sortable both">需求文档</div><div class="fht-cell"></div></th><th style="" data-field="allFilePath" tabindex="0"><div class="th-inner sortable both">附件</div><div class="fht-cell"></div></th><th style="text-align: center; " data-field="id" tabindex="0"><div class="th-inner ">操作</div><div class="fht-cell"></div></th></tr></thead><tbody><tr class="no-records-found"><td colspan="10">没有找到匹配的记录</td></tr></tbody></table></div><div class="fixed-table-footer" style="display: none;"><table><tbody><tr></tr></tbody></table></div><div class="fixed-table-pagination" style="display: none;"><div class="pull-left pagination-detail"><span class="pagination-info">显示第 1 到第 0 条记录，总共 0 条记录</span><span class="page-list" style="display: none;">每页显示 <span class="btn-group dropup"><button type="button" class="btn btn-default  btn-outline dropdown-toggle" data-toggle="dropdown"><span class="page-size">10</span> <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li class="active"><a href="javascript:void(0)">10</a></li></ul></span> 条记录</span></div><div class="pull-right pagination" style="display: none;"><ul class="pagination pagination-outline"><li class="page-first disabled"><a href="javascript:void(0)">«</a></li><li class="page-pre disabled"><a href="javascript:void(0)">‹</a></li><li class="page-number active"><a href="javascript:void(0)">1</a></li><li class="page-next disabled"><a href="javascript:void(0)">›</a></li><li class="page-last disabled"><a href="javascript:void(0)">»</a></li></ul></div></div></div></div><div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--shiro控制bootstraptable行内按钮看见性 -->
+<div>
+    <script type="text/javascript">
+        var s_edit_h = 'hidden';
+        var s_remove_h = 'hidden';
+        var s_resetPwd_h = 'hidden';
+        var order_status = '';
+    </script>
+</div>
+
+<div>
+	<script src="./jquery.min.js.下载"></script>
+	<script src="./bootstrap.min.js.下载"></script>
+	<script src="./bootstrap-table.min.js.下载"></script>
+	<script src="./bootstrap-table-mobile.min.js.下载"></script>
+	<script src="./bootstrap-table-zh-CN.min.js.下载"></script>
+	<script src="./jquery.validate.min.js.下载"></script>
+	<script src="./messages_zh.min.js.下载"></script>
+	<script src="./jstree.min.js.下载"></script>
+	<script src="./jquery.treegrid.min.js.下载"></script>
+	<script src="./jquery.treegrid.extension.js.下载"></script>
+	<script src="./jquery.treegrid.bootstrap3.js.下载"></script>
+	<script src="./chosen.jquery.js.下载"></script>
+	<script src="./layer.js.下载"></script>
+	<script src="./content.js.下载"></script>
+	<!--summernote-->
+	<script src="./summernote.js.下载"></script>
+	<script src="./summernote-zh-CN.min.js.下载"></script>
+	<script src="./layui.js.下载"></script>
+
+</div>
+<script type="text/javascript" src="./finishOrders.js.下载"></script>
+
+</body></html>

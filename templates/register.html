@@ -1,0 +1,157 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>ITKIM辅导平台</title>
+    <link rel="stylesheet" href="static/css/bootstrap.css">
+    <link rel="stylesheet" media="screen" href="static/css/css.css">
+    <link rel="stylesheet" href="static/css/index.css">
+    <link href="static/css/layui.css" rel="stylesheet">
+<link rel="stylesheet" href="static/css/layer.css" id="layuicss-layer"></head>
+<body>
+<form id="msform" onsubmit="return false;" name="msform">
+    <h5 style="color: red">如有疑问，加QQ1695439981</h5>
+
+    <!-- progressbar -->
+    <ul id="progressbar">
+        <li class="active">第一步</li>
+        <li>第二步</li>
+        <li>注册完成</li>
+    </ul>
+    <!-- fieldsets -->
+    <fieldset id="fieldset1">
+        <h2 class="fs-title">注册账号</h2>
+        <h3 class="fs-subtitle">第一步</h3>
+
+
+        <div class="form-group row">
+            <label for="username" class="col-sm-3 control-label" required="">用户名</label>
+            <div class="col-sm-9">
+                <input class="form-control username" name="username" id="username" placeholder="必填，用户名，6位以上数字字母" type="text">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="password" class="col-sm-3 control-label" required="">密码</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="password" name="password" minlength="6" placeholder="必填，密码,6位以上数字字母" type="password">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="cpass" class="col-sm-3 control-label" required="">密码</label>
+            <div class="col-sm-9">
+                <input type="password" class="form-control" id="cpass" name="cpass" minlength="6" placeholder="必填，确认密码">
+            </div>
+        </div>
+        <input type="button" class="form-control btn btn-success next action-button" name="next" value="下一步">
+    </fieldset>
+    <fieldset id="fieldset2">
+        <h2 class="fs-title">第二步</h2>
+
+        <div class="form-group row">
+            <label for="workStatus" class="col-sm-3 control-label" required="">工作状态</label>
+            <div class="col-sm-9">
+                <select id="workStatus" class="form-control" style="margin-bottom: 8px;">
+                    <option value="0">在读</option>
+                    <option value="1">已工作</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="realName" class="col-sm-3 control-label" required="">姓名</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="realName" id="realName" placeholder="必填，姓名">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="school" class="col-sm-3 control-label" required="">学校</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="school" id="school" placeholder="必填，学校">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="company" class="col-sm-3 control-label" required="">公司</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="company" id="company" placeholder="公司">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="wxId" class="col-sm-3 control-label" required="">QQ</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="QQId" id="QQId" placeholder="必填，微信号，方便微信派单">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="research" class="col-sm-3 control-label" required="">研究方向</label>
+            <div class="col-sm-9">
+                <input type="text" name="research" id="research" class="form-control" placeholder="必填，研究方向,可填多个">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="education" class="col-sm-3 control-label" required="">学历</label>
+            <div class="col-sm-9">
+                <select id="education" class="form-control" style="margin-bottom: 8px;">
+                    <option value="本科">本科</option>
+                    <option value="硕士">硕士</option>
+                    <option value="博士">博士</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+        </div>
+
+        <input type="button" class="form-control btn btn-success previous action-button" name="previous" value="上一步">
+        <input type="button" class="form-control btn btn-success next action-button" name="next" value="下一步">
+
+    </fieldset>
+    <fieldset id="fieldset3">
+        <h2 class="fs-title">注册完成</h2>
+
+        <div class="form-group row">
+            <label for="phone" class="col-sm-3 control-label" required="">手机号</label>
+            <div class="col-sm-3">
+                <select id="nation" class="form-control" style="padding: 0 0;font-size: 10px;">
+                    <option value="86">中国+86</option>
+                    <option value="61">澳大利亚+61</option>
+                    <option value="1">美国+1</option>
+                    <option value="1">加拿大+1</option>
+                    <option value="44">英国+44</option>
+                    <option value="64">新西兰+64</option>
+                    <option value="65">新加坡+65</option>
+                    <option value="852">香港+852</option>
+                    <option value="886">台湾+886</option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" maxlength="12" name="phone" id="phone" class="form-control" placeholder="必填，手机号">
+            </div>
+        </div>
+        <!--<div class="form-group row" style="margin-bottom: 0px;">
+            <label for="code" class="col-sm-3 col-lg-3 col-md-3 control-label" required="">验证码</label>
+            <div class="form-group col-lg-5 col-md-5">
+                <input type="text" name="code" id="code" class="form-control" placeholder="必填，验证码">
+            </div>
+            <div class="form-group col-lg-4 col-md-4">
+                <input type="button" class="btn btn-primary j-getCode" value="验证码">
+            </div>
+        </div>-->
+        <div class="form-group row">
+            <label for="inviter" class="col-sm-3 control-label" required="">邀请码</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="inviter" id="inviter" placeholder="选填，邀请码">
+            </div>
+
+        </div>
+        <input type="button" name="previous" class="form-control btn btn-success previous action-button" value="上一步">
+        <span id="registerId" class="form-control btn btn-success action-button">注册</span>
+
+    </fieldset>
+</form>s
+<script src="static/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="static/js/jquery.easing.min.js" type="text/javascript"></script>
+<script src="static/js/bootstrap.min.js"></script>
+<script src="static/js/bootstrapValidator.js"></script>
+<script src="static/js/layer.js"></script>
+<script src="static/js/index.js"></script>
+<script src="static/js/jQuery.time.js" type="text/javascript"></script>
+
+
+</body></html>
