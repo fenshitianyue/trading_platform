@@ -8,14 +8,17 @@ from flask import jsonify
 import json
 import MySQLdb
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 app = Flask(__name__)
 
 # 网站主页面
-# @app.route('/index')
-# def login():
-#     userName = request.values.get('name')
-#     toolName = request.values.get('tool_name')
-#     return render_template('index.html')
+@app.route('/main')
+def main():
+    username = '赵满刚'
+    return render_template('index.html', name=username)
 
 # 登陆主界面
 @app.route('/login')
@@ -27,6 +30,8 @@ def user_login():
     username = request.values.get('username')
     password = request.values.get('password')
     code = request.values.get('code')
+    #TODO:从数据库中查找是否存在用户名并且用户名是否和密码吻合
+    #TODO:验证验证码是否正确
     # return jsonify(code=1, msg='登陆失败，请重试!')
     return jsonify(code=0)
 
@@ -49,7 +54,7 @@ def checkUsername():
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     # 拼接SQL语句
-    sql = "select dev_name from dev where dev_name = '" + username + "'"
+    sql = "select dev_username from dev where dev_username = '" + username + "'"
     # 执行查询操作
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -86,17 +91,15 @@ def user_register():
     # # 连接MySQL数据库并获取到数据库句柄
     # db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     # cursor = db.cursor()
-    # # 拼接SQL语句
-    # sql = ""
+    # # TODO:拼接SQL语句
+    # sql = "insert into dev values("
     # # 执行插入操作
     # cursor.execute(sql)
     # result = cursor.fetchall()
-    # if result: # 如果登陆成功，code=0
-    #     return jsonify(code=0, msg="register OK")
-    # else:
-    #     return jsonify(code=1, msg="register Error") # TODO：暂时不考虑注册失败的原因，同意返回register Error
-    return jsonify(username, password, workStatus, realName, school, company, QQId, research, education, phone, inviteCode)
-
+    if True: # 如果登陆成功，code=0
+        return jsonify(code=0, msg="register OK")
+    else:
+        return jsonify(code=1, msg="register Error") # TODO：暂时不考虑注册失败的原因，同意返回register Error
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
