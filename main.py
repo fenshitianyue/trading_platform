@@ -101,6 +101,53 @@ def user_register():
     else:
         return jsonify(code=1, msg="register Error") # TODO：暂时不考虑注册失败的原因，同意返回register Error
 
+# 修改密码
+@app.route('/resetPwd', methods=['POST'])
+def resetPwd():
+    pass
+# 接订单
+@app.route('/assignList', methods=['POST'])
+def assignList():
+    pass
+
+# 其他页面
+@app.route('/main.html')
+def templates_main():
+    return render_template('main.html')
+
+@app.route('/assignList.html')
+def templates_assignList():
+    return render_template('assignList.html')
+
+@app.route('/myOrders.html')
+def templates_myorders():
+    return render_template('myOrders.html')
+
+@app.route('/finishOrders.html')
+def templates_finishorders():
+    return render_template('finishOrders.html')
+
+@app.route('/settleList.html')
+def templates_settlelist():
+    return render_template('settleList.html')
+
+@app.route('/finishList.html')
+def templates_finishList():
+    return render_template('finishList.html')
+
+@app.route('/myInvite.html')
+def templates_myInvite():
+    return render_template('myInvite.html')
+
+@app.route('/myReward.html')
+def templates_myreword():
+    return render_template('myReward.html')
+
+@app.route('/list.html')
+def templates_list():
+    return render_template('list.html')
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
 
