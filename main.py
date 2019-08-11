@@ -5,8 +5,10 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import jsonify
+from flask import Response
 import json
 import MySQLdb
+import os
 
 import sys
 reload(sys)
@@ -109,6 +111,18 @@ def resetPwd():
 @app.route('/assignList', methods=['POST'])
 def assignList():
     pass
+
+# 返回图片
+# 图片类型暂时都定为jpeg
+@app.route('/images/<image_name>')
+def get_image(image_name):
+    imgPath = './static/images/' + image_name
+    mime = 'image/jpeg'
+    if not os.path.exists(imgPath):
+        return jsonify("Image not found")
+    with open(imgPath, 'rb') as f:
+        image = f.read()
+    return Response(image, mimetype=mime)
 
 # 其他页面
 @app.route('/main.html')
