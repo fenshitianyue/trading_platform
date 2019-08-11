@@ -37,6 +37,11 @@ def user_login():
     # return jsonify(code=1, msg='登陆失败，请重试!')
     return jsonify(code=0)
 
+# TODO:登陆时获取验证码
+@app.route('/admin/getCaptcha')
+def get_captcha():
+    pass
+
 # 注册主界面
 @app.route('/register')
 def register():
