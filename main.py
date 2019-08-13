@@ -111,7 +111,20 @@ def user_register():
 # 修改密码
 @app.route('/resetPwd', methods=['POST'])
 def resetPwd():
-    pass
+    # 从前端获取密码
+    passwd = request.values.get('password')
+    # 连接数据库
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    # 拼接sql语句
+    sql = "update dev set dev_passwd = '" + passwd + "'"
+    # 执行更新表 dev 操作
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    if result:
+        return jsonify(code=0, msg="Password updated successfully")
+    else:
+        return jsonify(code=1, msg="Password updated failed") # TODO:暂时错误返回消息定为这个，后期细化错误原因
 # 接订单
 @app.route('/assignList', methods=['POST'])
 def assignList():
