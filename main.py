@@ -106,7 +106,7 @@ def user_register():
     if True: # 如果登陆成功，code=0
         return jsonify(code=0, msg="register OK")
     else:
-        return jsonify(code=1, msg="register Error") # TODO：暂时不考虑注册失败的原因，同意返回register Error
+        return jsonify(code=1, msg="register Error") # TODO：暂时不考虑注册失败的原因，后期再考虑细化失败原因
 
 # 修改密码
 @app.route('/resetPwd', methods=['POST'])
