@@ -9,12 +9,21 @@ from flask import Response
 import json
 import MySQLdb
 import os
+import random
 
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 app = Flask(__name__)
+
+# 生成邀请码(6位)
+def generate_invite_code():
+    invite_code = ""
+    for i in range(6):
+        c = chr(random.randrange(65, 91))
+        invite_code = invite_code + c
+    return invite_code
 
 # 网站主页面
 @app.route('/main')
@@ -94,16 +103,20 @@ def user_register():
     phone = data['phone'] # 手机号 (string)
     inviteCode = data['inviteCode'] # 邀请码 (string)
     # nation = data['nation'] # 手机号所属区域 (int)
+    # 新用户的邀请码
+    newInviteCode = generate_invite_code()
+    # 连接MySQL数据库并获取到数据库句柄
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    #TODO:在数据库中查询邀请码是否正确
+    sql1 = ""
 
-    # # 连接MySQL数据库并获取到数据库句柄
-    # db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
-    # cursor = db.cursor()
-    # # TODO:拼接SQL语句
-    # sql = "insert into dev values("
-    # # 执行插入操作
-    # cursor.execute(sql)
-    # result = cursor.fetchall()
-    if True: # 如果登陆成功，code=0
+
+    sql2 = "insert into dev() values("
+    # 执行插入操作
+    cursor.execute(sql2)
+    result = cursor.fetchall()
+    if result: # 如果登陆成功，code=0
         return jsonify(code=0, msg="register OK")
     else:
         return jsonify(code=1, msg="register Error") # TODO：暂时不考虑注册失败的原因，后期再考虑细化失败原因
