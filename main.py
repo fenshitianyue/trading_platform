@@ -17,7 +17,7 @@ sys.setdefaultencoding('utf8')
 
 app = Flask(__name__)
 
-# 生成邀请码(6位)
+# 生成邀请码(6位大写字母)
 def generate_invite_code():
     invite_code = ""
     for i in range(6):
@@ -41,14 +41,16 @@ def user_login():
     username = request.values.get('username')
     password = request.values.get('password')
     code = request.values.get('code')
-    #TODO:从数据库中查找是否存在用户名并且用户名是否和密码吻合
-    #TODO:验证验证码是否正确
+    # TODO:从前端获取正确验证码
+    # TODO:从数据库中查找是否存在用户名并且用户名是否和密码吻合
+    # TODO:比对用户填写的用户码和正确验证码是否一致
     # return jsonify(code=1, msg='登陆失败，请重试!')
     return jsonify(code=0)
 
 # TODO:登陆时获取验证码
 @app.route('/admin/getCaptcha')
 def get_captcha():
+    # TODO:生成验证码并发送给前端
     pass
 
 # 注册主界面
@@ -106,24 +108,24 @@ def user_register():
     # 新用户的邀请码
     newInviteCode = generate_invite_code()
     # 连接MySQL数据库并获取到数据库句柄
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
-    cursor = db.cursor()
+    # db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    # cursor = db.cursor()
     # 检测是否填写邀请码
-    if inviteCode:
-        # TODO:在数据库中查询邀请码是否正确
-        sql_s = ""
-        try:
-            cursor.execute(sql_s)
-        except:
-            return jsonify(code=1, msg="检查所填写的邀请码是否正确！")
+    # if inviteCode:
+    #     # TODO:在数据库中查询邀请码是否正确
+    #     sql_s = ""
+    #     try:
+    #         cursor.execute(sql_s)
+    #     except:
+    #         return jsonify(code=1, msg="检查所填写的邀请码是否正确！")
 
-    sql_i = "insert into dev() values("
+    # sql_i = "insert into dev() values("
 
-    sql_i = sql_i + ")"
-    # 执行插入操作
-    cursor.execute(sql_i)
-    result = cursor.fetchall()
-    if result:
+    # sql_i = sql_i + ")"
+    # # 执行插入操作
+    # cursor.execute(sql_i)
+    # result = cursor.fetchall()
+    if True:
         return jsonify(code=0, msg="register OK")  # 如果注册成功，code=0
     else:
         return jsonify(code=1, msg="register Error")  # TODO：暂时不考虑注册失败的原因，后期再考虑细化失败原因
@@ -144,7 +146,8 @@ def resetPwd():
     if result:
         return jsonify(code=0, msg="Password updated successfully")
     else:
-        return jsonify(code=1, msg="Password updated failed") # TODO:暂时错误返回消息定为这个，后期细化错误原因
+        return jsonify(code=1, msg="Password updated failed")  # TODO:暂时错误返回消息定为这个，后期细化错误原因
+
 # 接订单
 @app.route('/assignList', methods=['POST'])
 def assignList():
