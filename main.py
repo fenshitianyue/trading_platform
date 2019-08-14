@@ -108,18 +108,25 @@ def user_register():
     # 连接MySQL数据库并获取到数据库句柄
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
-    #TODO:在数据库中查询邀请码是否正确
-    sql1 = ""
+    # 检测是否填写邀请码
+    if inviteCode:
+        # TODO:在数据库中查询邀请码是否正确
+        sql_s = ""
+        try:
+            cursor.execute(sql_s)
+        except:
+            return jsonify(code=1, msg="检查所填写的邀请码是否正确！")
 
+    sql_i = "insert into dev() values("
 
-    sql2 = "insert into dev() values("
+    sql_i = sql_i + ")"
     # 执行插入操作
-    cursor.execute(sql2)
+    cursor.execute(sql_i)
     result = cursor.fetchall()
-    if result: # 如果登陆成功，code=0
-        return jsonify(code=0, msg="register OK")
+    if result:
+        return jsonify(code=0, msg="register OK")  # 如果注册成功，code=0
     else:
-        return jsonify(code=1, msg="register Error") # TODO：暂时不考虑注册失败的原因，后期再考虑细化失败原因
+        return jsonify(code=1, msg="register Error")  # TODO：暂时不考虑注册失败的原因，后期再考虑细化失败原因
 
 # 修改密码
 @app.route('/resetPwd', methods=['POST'])
