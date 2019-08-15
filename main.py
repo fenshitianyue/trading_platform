@@ -141,9 +141,14 @@ def resetPwd():
     else:
         return jsonify(code=1, msg="Password updated failed")  # TODO:暂时错误返回消息定为这个，后期细化错误原因
 
-# 接订单
+# 查询订单
 @app.route('/orders/assignList', methods=['POST'])
 def assignList():
+    pass
+
+# 接订单
+@app.route('/orders/pickOrder')
+def pickOrder():
     pass
 
 # 显示已接订单
