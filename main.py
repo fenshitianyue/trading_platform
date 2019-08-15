@@ -181,6 +181,11 @@ def generate_invite_code():
         invite_code = invite_code + c
     return invite_code
 
+# 安全退出
+@app.route('/logout')
+def logout():
+    return render_template('login.html')
+
 # 其他页面
 @app.route('/main.html')
 def templates_main():
