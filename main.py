@@ -17,14 +17,6 @@ sys.setdefaultencoding('utf8')
 
 app = Flask(__name__)
 
-# 生成邀请码(6位大写字母)
-def generate_invite_code():
-    invite_code = ""
-    for i in range(6):
-        c = chr(random.randrange(65, 91))
-        invite_code = invite_code + c
-    return invite_code
-
 # 网站主页面
 @app.route('/main')
 def main():
@@ -32,7 +24,7 @@ def main():
     return render_template('index.html', name=username)
 
 # 登陆主界面
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     return render_template('login.html')
 
@@ -133,24 +125,35 @@ def user_register():
 # 修改密码
 @app.route('/resetPwd', methods=['POST'])
 def resetPwd():
-    # 从前端获取密码
-    passwd = request.values.get('password')
-    # 连接数据库
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
-    cursor = db.cursor()
-    # 拼接sql语句
-    sql = "update dev set dev_passwd = '" + passwd + "'"
-    # 执行更新表 dev 操作
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    if result:
-        return jsonify(code=0, msg="Password updated successfully")
+    # # 从前端获取密码
+    # passwd = request.values.get('password')
+    # # 连接数据库
+    # db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    # cursor = db.cursor()
+    # # 拼接sql语句
+    # sql = "update dev set dev_passwd = '" + passwd + "'"
+    # # 执行更新表 dev 操作
+    # cursor.execute(sql)
+    # result = cursor.fetchall()
+    if True:
+        # return jsonify(code=0, msg="Password updated successfully")
+        return jsonify(code=0, msg="密码修改成功！")
     else:
         return jsonify(code=1, msg="Password updated failed")  # TODO:暂时错误返回消息定为这个，后期细化错误原因
 
 # 接订单
-@app.route('/assignList', methods=['POST'])
+@app.route('/orders/assignList', methods=['POST'])
 def assignList():
+    pass
+
+# 显示已接订单
+@app.route('/orders/myOrders', methods=['POST'])
+def myOrders():
+    pass
+
+# 显示已完成订单
+@app.route('/orders/finishOrders', methods=['POST'])
+def finishOrders():
     pass
 
 # 返回图片
@@ -164,6 +167,14 @@ def get_image(image_name):
     with open(imgPath, 'rb') as f:
         image = f.read()
     return Response(image, mimetype=mime)
+
+# 生成邀请码(6位大写字母)
+def generate_invite_code():
+    invite_code = ""
+    for i in range(6):
+        c = chr(random.randrange(65, 91))
+        invite_code = invite_code + c
+    return invite_code
 
 # 其他页面
 @app.route('/main.html')
