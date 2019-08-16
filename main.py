@@ -10,6 +10,9 @@ import json
 import MySQLdb
 import os
 import random
+import base64
+import gvcode
+from cStringIO import StringIO
 
 import sys
 reload(sys)
@@ -42,8 +45,15 @@ def user_login():
 # TODO:登陆时获取验证码
 @app.route('/admin/getCaptcha')
 def get_captcha():
-    # TODO:生成验证码并发送给前端
-    pass
+    # 生成验证码并发送给前端
+    img, code = gvcode.generate()
+    out = StringIO()
+    img.save(out, format='PNG')
+    b64 = base64.b64encode(out.getvalue())
+    result = "data:image/png;base64,"
+    result = result + b64
+    return jsonify(data=result)
+
 
 # 注册主界面
 @app.route('/register')
