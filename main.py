@@ -43,16 +43,19 @@ def user_login():
     return jsonify(code=0)
 
 # TODO:登陆时获取验证码
-@app.route('/admin/getCaptcha')
+@app.route('/admin/getCaptcha', methods=['GET', 'POST'])
 def get_captcha():
     # 生成验证码并发送给前端
-    img, code = gvcode.generate()
+    img, code = gvcode.generate(size=(80, 27), length=4)
     out = StringIO()
     img.save(out, format='PNG')
     b64 = base64.b64encode(out.getvalue())
     result = "data:image/png;base64,"
     result = result + b64
-    return jsonify(data=result)
+    print result
+    print code
+    # return jsonify(data=result)
+    return result
 
 
 # 注册主界面
