@@ -61,6 +61,7 @@ def user_login():
     # 比对用户填写的用户码和正确验证码是否一致
     if code.lower() != correct_code.lower():
         return jsonify(code=1, msg='验证码错误！')
+    db.close()
     return jsonify(code=0)
 
 # 登陆时获取验证码
@@ -99,6 +100,7 @@ def checkUsername():
     # 执行查询操作
     cursor.execute(sql)
     result = cursor.fetchall()
+    db.close()
     if result: # 如果查询结果不为空, valid = False
         return jsonify(valid=False)
     else:
@@ -173,6 +175,7 @@ def resetPwd():
     result = cursor.fetchone()
     dev_passwd = result[0]
     # 判断修改后的密码和新密码是否相同?
+    db.close()
     if dev_passwd == passwd:
         return jsonify(code=0, msg="密码修改成功！")
     else:
@@ -228,10 +231,17 @@ def logout():
 def templates_main():
     # 从session获取用户名
     username = session.get('username', None)
-    # TODO:从数据库查找用户名对应的真实姓名和邀请码
+    # 从数据库查找用户名对应的真实姓名和邀请码
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    sql = "select dev_realname, dev_invitecode from dev where dev_username = '" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchone()
 
-    toolname = ''
-    invite_code = ''
+    toolname = result[0]
+    invite_code = result[1]
+
+    db.close()
     return render_template('main.html', toolName=toolname, code=invite_code)
 
 @app.route('/assignList.html')
