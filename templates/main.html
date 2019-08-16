@@ -7,17 +7,17 @@
 	<meta name="keywords" content="">
 	<meta name="description" content="">
 	<link rel="shortcut icon" href="https://www.tutorzzz.com/favicon.ico">
-	<link href="./bootstrap.min.css" rel="stylesheet">
-	<link href="./font-awesome.css" rel="stylesheet">
-	<link href="./bootstrap-table.min.css" rel="stylesheet">
-	<link href="./style.min.css" rel="stylesheet">
-	<link href="./jquery.treegrid.css" rel="stylesheet">
+	<link href="static/css/bootstrap.min.css" rel="stylesheet">
+	<link href="static/css/font-awesome.css" rel="stylesheet">
+	<link href="static/css/bootstrap-table.min.css" rel="stylesheet">
+	<link href="static/css/style.min.css" rel="stylesheet">
+	<link href="static/css/jquery.treegrid.css" rel="stylesheet">
 	<!--summernote css -->
-	<link href="./summernote-0.8.8.css" rel="stylesheet">
-	<link href="./animate.css" rel="stylesheet">
-	<link href="./chosen.css" rel="stylesheet">
-	<link href="./style.css" rel="stylesheet">
-	<link href="./layui.css" rel="stylesheet">
+	<link href="static/css/summernote-0.8.8.css" rel="stylesheet">
+	<link href="static/css/animate.css" rel="stylesheet">
+	<link href="static/css/chosen.css" rel="stylesheet">
+	<link href="static/css/style.css" rel="stylesheet">
+	<link href="static/css/layui.css" rel="stylesheet">
 <style>
     .widget-user .widget-user-header {
         padding: 20px;
@@ -109,7 +109,7 @@
         font-weight: 600;
         font-size: 16px;
     }
-</style><link rel="stylesheet" href="./layer(1).css" id="layuicss-layer"></head>
+</style><link rel="stylesheet" href="static/css/layer(1).css" id="layuicss-layer"></head>
 
 <body>
 
@@ -123,12 +123,12 @@
             <div class="box box-widget widget-user">
                 <!-- Add the bg color to the header using any of the bg-* classes -->
                 <div class="widget-user-header bg-aqua-active">
-                    <h3 class="widget-user-username">赵满刚</h3>
-                    <h6 class="widget-user-desc" style="color: lightgrey">邀请码: <span style="color: lightgreen"><strong>MFMLEI</strong></span></h6>
+                  <h3 class="widget-user-username">{{toolName}}</h3>
+                  <h6 class="widget-user-desc" style="color: lightgrey">邀请码: <span style="color: lightgreen"><strong>{{code}}</strong></span></h6>
 
                 </div>
                 <div class="widget-user-image">
-                    <img class="img-circle" src="./user.jpg" alt="User Avatar">
+                    <img class="img-circle" src="static/images/user.jpg" alt="User Avatar">
                 </div>
                 <div class="box-footer">
                     <div class="row">
@@ -171,8 +171,8 @@
                             </ul>
                         </div>
                         <div class="col-sm-12 text-center">
-                            <a class="J_menuItem btn btn-primary" href="https://www.tutorzzz.com/tutorzzz/orders/assignList?source=main"><span>立即接单</span></a>
-                            <button class="btn btn-warning copy" url="https://tutorzzz.com/register?inviteCode=MFMLEI"><span>邀请链接</span></button>
+                            <a class="J_menuItem btn btn-primary" href="https://localhost:5000/tutorzzz/orders/assignList?source=main"><span>立即接单</span></a>
+                            <button class="btn btn-warning copy" url="https://localhost:5000/register?inviteCode=MFMLEI"><span>邀请链接</span></button>
                         </div>
 
                     </div>
@@ -185,10 +185,10 @@
 
         <div class="col-md-8">
             <div class="panel panel-default">
-                <div class="panel-heading">关于TutorZZZ接单平台</div>
+                <div class="panel-heading">关于ITKIM接单平台</div>
                 <div style="padding: 10px 0 20px 20px;">
                     <h1>介绍</h1>
-                    <p>TutorZZZ是一个IT工程师在线接单平台，本平台专注英文编程订单，审核通过的工程师均可接单</p>
+                    <p>ITKIM是一个IT工程师在线接单平台，本平台专注英文编程订单，审核通过的工程师均可接单</p>
                     <hr>
 
                     <h2>接单规则</h2>
@@ -222,7 +222,7 @@
                         <li>1.<span style="color: red">邀请好友注册,将获得好友前5单的邀请奖励(1级邀请获得<strong>10%</strong>的成单金额奖励，2级邀请获得<strong>2%</strong>的成单金额奖励)</span>
                         </li>
                         <li>2.邀请工程师完成订单结算后，可申请邀请奖励结算。</li>
-                        <li>3.开通邀请权限需要联系管理员-微信号<span style="color: red">tutorzzz</span></li>
+                        <li>3.开通邀请权限需要联系管理员-微信号<span style="color: red">ITKIM</span></li>
                     </ul>
 
                     <hr>
@@ -326,27 +326,27 @@
     </div>
 </div>
 <div>
-	<script src="./jquery.min.js.下载"></script>
-	<script src="./bootstrap.min.js.下载"></script>
-	<script src="./bootstrap-table.min.js.下载"></script>
-	<script src="./bootstrap-table-mobile.min.js.下载"></script>
-	<script src="./bootstrap-table-zh-CN.min.js.下载"></script>
-	<script src="./jquery.validate.min.js.下载"></script>
-	<script src="./messages_zh.min.js.下载"></script>
-	<script src="./jstree.min.js.下载"></script>
-	<script src="./jquery.treegrid.min.js.下载"></script>
-	<script src="./jquery.treegrid.extension.js.下载"></script>
-	<script src="./jquery.treegrid.bootstrap3.js.下载"></script>
-	<script src="./chosen.jquery.js.下载"></script>
-	<script src="./layer.js.下载"></script>
-	<script src="./content.js.下载"></script>
+	<script src="static/js/jquery.min.js"></script>
+	<script src="static/js/bootstrap.min.js"></script>
+	<script src="static/js/bootstrap-table.min.js"></script>
+	<script src="static/js/bootstrap-table-mobile.min.js"></script>
+	<script src="static/js/bootstrap-table-zh-CN.min.js"></script>
+	<script src="static/js/jquery.validate.min.js"></script>
+	<script src="static/js/messages_zh.min.js"></script>
+	<script src="static/js/jstree.min.js"></script>
+	<script src="static/js/jquery.treegrid.min.js"></script>
+	<script src="static/js/jquery.treegrid.extension.js"></script>
+	<script src="static/js/jquery.treegrid.bootstrap3.js"></script>
+	<script src="static/js/chosen.jquery.js"></script>
+	<script src="static/js/layer.js"></script>
+	<script src="static/js/content.js"></script>
 	<!--summernote-->
-	<script src="./summernote.js.下载"></script>
-	<script src="./summernote-zh-CN.min.js.下载"></script>
-	<script src="./layui.js.下载"></script>
+	<script src="static/js/summernote.js"></script>
+	<script src="static/js/summernote-zh-CN.min.js"></script>
+	<script src="static/js/layui.js"></script>
 
 </div>
-<script src="./clipboard.min.js.下载"></script>
+<script src="static/js/clipboard.min.js"></script>
 <script>
     var clipboard = new Clipboard('button.copy', {
         text: function (trigger) {
