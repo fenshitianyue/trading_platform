@@ -41,7 +41,20 @@ def user_login():
     code = request.values.get('code')
     # 从 session 获取正确验证码
     correct_code = session.get('code', None)
-    # TODO:从数据库中查找是否存在用户名并且用户名是否和密码吻合
+    # 从数据库中查找是否存在用户名和密码
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    sql = "select dev_username, dev_passwd from dev where dev_username = '" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    # 用户名是否存在?
+    if not result:
+        return jsonify(code=1, msg='用户名不存在！')
+    else:
+        dev_passwd = result[1]
+        # 用户名和密码是否吻合?
+        if dev_passwd != password:
+            return jsonify(code=1, msg='密码错误！')
 
     # 如果可以用户可以正常登陆，将用户名写入session
     session['username'] = username
@@ -50,7 +63,7 @@ def user_login():
         return jsonify(code=1, msg='验证码错误！')
     return jsonify(code=0)
 
-# TODO:登陆时获取验证码
+# 登陆时获取验证码
 @app.route('/admin/getCaptcha', methods=['GET', 'POST'])
 def get_captcha():
     # 生成验证码并发送给前端
