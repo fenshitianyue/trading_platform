@@ -163,16 +163,20 @@ def resetPwd():
     # 连接数据库
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
-    # 拼接sql语句
-    sql = "update dev set dev_passwd = '" + passwd + "'" + "where dev_username = '" + username + "'"
-    # 执行更新表 dev 操作
+    # 更新数据库中当前用户的密码
+    sql = "update dev set dev_passwd = '" + passwd + "'" + " where dev_username = '" + username + "'"
     cursor.execute(sql)
-    result = cursor.fetchall()
-    if result:
-        # return jsonify(code=0, msg="Password updated successfully")
+    db.commit()
+    # 从数据库中查找当前用户的密码
+    sql = "select dev_passwd from dev where dev_username = '" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    dev_passwd = result[0]
+    # 判断修改后的密码和新密码是否相同?
+    if dev_passwd == passwd:
         return jsonify(code=0, msg="密码修改成功！")
     else:
-        return jsonify(code=1, msg="Password updated failed")  # TODO:暂时错误返回消息定为这个，后期细化错误原因
+        return jsonify(code=1, msg="密码修改失败！")  # TODO:暂时错误返回消息定为这个，后期细化错误原因
 
 # 查询订单
 @app.route('/orders/assignList', methods=['POST'])
