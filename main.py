@@ -6,6 +6,7 @@ from flask import render_template
 from flask import request
 from flask import jsonify
 from flask import Response
+from flask import session
 import json
 import MySQLdb
 import os
@@ -19,11 +20,13 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = '654321'  # 使用session前设置密匙
 
 # 网站主页面
 @app.route('/main')
 def main():
-    username = '赵满刚'
+    # 从session获取username
+    username = session.get('username', None)
     return render_template('index.html', name=username)
 
 # 登陆主界面
@@ -36,10 +39,15 @@ def user_login():
     username = request.values.get('username')
     password = request.values.get('password')
     code = request.values.get('code')
-    # TODO:从前端获取正确验证码
+    # 从 session 获取正确验证码
+    correct_code = session.get('code', None)
     # TODO:从数据库中查找是否存在用户名并且用户名是否和密码吻合
-    # TODO:比对用户填写的用户码和正确验证码是否一致
-    # return jsonify(code=1, msg='登陆失败，请重试!')
+
+    # 如果可以用户可以正常登陆，将用户名写入session
+    session['username'] = username
+    # 比对用户填写的用户码和正确验证码是否一致
+    if code.lower() != correct_code.lower():
+        return jsonify(code=1, msg='验证码错误！')
     return jsonify(code=0)
 
 # TODO:登陆时获取验证码
@@ -47,16 +55,13 @@ def user_login():
 def get_captcha():
     # 生成验证码并发送给前端
     img, code = gvcode.generate(size=(80, 27), length=4)
+    session['code'] = code  # 将生成的验证码数据存入session
     out = StringIO()
     img.save(out, format='PNG')
     b64 = base64.b64encode(out.getvalue())
     result = "data:image/png;base64,"
     result = result + b64
-    print result
-    print code
-    # return jsonify(data=result)
     return result
-
 
 # 注册主界面
 @app.route('/register')
@@ -202,7 +207,13 @@ def logout():
 # 其他页面
 @app.route('/main.html')
 def templates_main():
-    return render_template('main.html')
+    # 从session获取用户名
+    username = session.get('username', None)
+    # TODO:从数据库查找用户名对应的真实姓名和邀请码
+
+    toolname = ''
+    invite_code = ''
+    return render_template('main.html', toolName=toolname, code=invite_code)
 
 @app.route('/assignList.html')
 def templates_assignList():
