@@ -150,9 +150,14 @@ $(function () {
                     type: "POST",
                     url: "/user/login",
                     data: params,
-                    success: function (r) {
+                    success: function (r) { //这里要给参数r加上用户名接口，并且用ajax发送给main
                         if (r.code == 0) {
-                            parent.location.href = '/index';
+                        	$.ajax({
+                        		type:"POST",
+                        		async:false,
+                        		
+                        	})
+                            parent.location.href = '/main';
                         } else {
                             layer.msg(r.msg);
                         }
