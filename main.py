@@ -103,7 +103,7 @@ def user_register():
     # 从前端获取数据
     data = request.get_json()
     data = json.loads(request.get_data())
-    username = data['username']
+    username = data['username'] # 用户名 (string)
     password = data['password'] # 用户密码 (string)
     workStatus = data['workStatus'] # 工作状态 (int)
     realName = data['realName'] # 真实姓名 (string) 编码是unocode,查看需要decode
@@ -114,13 +114,13 @@ def user_register():
     education = data['education'] # 教育水平 (string) 编码是unocode,查看需要decode
     phone = data['phone'] # 手机号 (string)
     inviteCode = data['inviteCode'] # 邀请码 (string)
-    # nation = data['nation'] # 手机号所属区域 (int)
+    # nation = data['nation'] # 手机号所属区域 (int) TODO:暂不考虑，统一插入0
     # 新用户的邀请码
     newInviteCode = generate_invite_code()
-    # 连接MySQL数据库并获取到数据库句柄
+    # # 连接MySQL数据库并获取到数据库句柄
     # db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     # cursor = db.cursor()
-    # 检测是否填写邀请码
+    # # 检测是否填写邀请码
     # if inviteCode:
     #     # TODO:在数据库中查询邀请码是否正确
     #     sql_s = ""
@@ -143,17 +143,19 @@ def user_register():
 # 修改密码
 @app.route('/resetPwd', methods=['POST'])
 def resetPwd():
-    # # 从前端获取密码
-    # passwd = request.values.get('password')
-    # # 连接数据库
-    # db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
-    # cursor = db.cursor()
-    # # 拼接sql语句
-    # sql = "update dev set dev_passwd = '" + passwd + "'"
-    # # 执行更新表 dev 操作
-    # cursor.execute(sql)
-    # result = cursor.fetchall()
-    if True:
+    # 从session获取username
+    username = session.get('username', None)
+    # 从前端获取密码
+    passwd = request.values.get('password')
+    # 连接数据库
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    # 拼接sql语句
+    sql = "update dev set dev_passwd = '" + passwd + "'" + "where dev_username = '" + username + "'"
+    # 执行更新表 dev 操作
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    if result:
         # return jsonify(code=0, msg="Password updated successfully")
         return jsonify(code=0, msg="密码修改成功！")
     else:
