@@ -7,6 +7,7 @@ from flask import request
 from flask import jsonify
 from flask import Response
 from flask import session
+from datetime import timedelta
 import json
 import MySQLdb
 import os
@@ -21,13 +22,18 @@ sys.setdefaultencoding('utf8')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '654321'  # 使用session前设置密匙
+app.config['PREMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # 设置session的过期时间
 
 # 网站主页面
 @app.route('/main')
 def main():
     # 从session获取username
     username = session.get('username', None)
-    return render_template('index.html', name=username)
+    # 如果成功从session中获取到username，那么返回主页
+    if username:
+        return render_template('index.html', name=username)
+    else:  # 如果session中不存在username，那么返回登陆页面
+        return render_template('login.html')
 
 # 登陆主界面
 @app.route('/login', methods=['GET', 'POST'])
@@ -224,6 +230,8 @@ def generate_invite_code():
 # 安全退出
 @app.route('/logout')
 def logout():
+    # 删除当前用户保存在session中的数据(username)
+    session.pop('username')
     return render_template('login.html')
 
 # 其他页面
