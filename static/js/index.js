@@ -1,53 +1,52 @@
 $(function () {
-    $('body')
-    // 获取验证码
-        .on('click', '.j-getCode', function (e) {
-            var phone = $("#phone").val();
-            if (phone == '') {
-                layer.msg('请输入手机号', {icon: 5});
-                return false;
-            }
-            var param = /^1[123456789]\d{9}$/;
-            if (!param.test(phone) && $("#nation").val() == '86') {
-
-                layer.msg('手机号不合法，请重新输入', {icon: 5});
-                return false;
-            }
-//          var runTime = 60;
-//          $('.j-getCode').attr('disabled', 'disabled');
-//          $('.j-getCode').addClass('btn-default-disabled');
-//          $('.j-getCode').val('验证码(' + runTime + 's)');
-//          var interval = setInterval(function () {
-//              runTime--;
-//              $('.j-getCode').val('验证码(' + runTime + 's)');
-//              if (runTime == 0) {
-//                  $('.j-getCode').val('验证码');
-//                  $('.j-getCode').removeAttr('disabled');
-//                  $('.j-getCode').removeClass('btn-default-disabled');
-//                  clearInterval(interval);
-//              }
-//          }, 1000);
-//          $.ajax({
-//              cache: true,
-//              type: "POST",
-//              url: "/tutorzzz/tutor/getPhoneCode",
-//              data: {phone: phone,nation:$("#nation").val()},// 你的formid
-//              async: false,
-//              error: function (request) {
-//                  layer.alert("Connection error");
-//              },
-//              success: function (data) {
-//                  if (data.code == 0) {
-//                      layer.msg('验证码发送成功', {icon: 1});
-//
-//                  } else {
-//                      layer.msg(data.msg, {icon: 5});
-//                  }
-//
-//              }
-//          });
-//          return false;
-        });
+//  $('body')
+//  // 获取验证码
+//      .on('click', '.j-getCode', function (e) {
+//          var phone = $("#phone").val();
+//          if (phone == '') {
+//              layer.msg('请输入手机号', {icon: 5});
+//              return false;
+//          }
+//          var param = /^1[123456789]\d{9}$/;
+//          if (!param.test(phone) && $("#nation").val() == '86') {
+//              // globalTip({'msg':'手机号不合法，请重新输入','setTime':3});
+//              layer.msg('手机号不合法，请重新输入', {icon: 5});
+//              return false;
+//          }
+////          var runTime = 60;
+////          $('.j-getCode').attr('disabled', 'disabled');
+////          $('.j-getCode').addClass('btn-default-disabled');
+////          $('.j-getCode').val('验证码(' + runTime + 's)');
+////          var interval = setInterval(function () {
+////              runTime--;
+////              $('.j-getCode').val('验证码(' + runTime + 's)');
+////              if (runTime == 0) {
+////                  $('.j-getCode').val('验证码');
+////                  $('.j-getCode').removeAttr('disabled');
+////                  $('.j-getCode').removeClass('btn-default-disabled');
+////                  clearInterval(interval);
+////              }
+////          }, 1000);
+////          $.ajax({
+////              cache: true,
+////              type: "POST",
+////              url: "/tutorzzz/tutor/getPhoneCode",
+////              data: {phone: phone,nation:$("#nation").val()},// 你的formid
+////              async: false,
+////              error: function (request) {
+////                  layer.alert("Connection error");
+////              },
+////              success: function (data) {
+////                  if (data.code == 0) {
+////                      layer.msg('验证码发送成功', {icon: 1});
+////                  } else {
+////                      layer.msg(data.msg, {icon: 5});
+////                  }
+////
+////              }
+////          });
+////          return false;
+//      });
 
 
     $("#registerId").on('click', function () {
@@ -88,8 +87,8 @@ $(function () {
             return false;
         }
         var company = $("#company").val().trim();
-        var wxId = $("#wxId").val().trim();
-        if (wxId == '') {
+        var QQId = $("#QQId").val().trim();
+        if (QQId == '') {
             layer.msg('请输入微信号', {icon: 5});
             return false;
         }
@@ -116,7 +115,7 @@ $(function () {
 //      }
         var inviter = $("#inviter").val();
 
-        var jsonData = {
+        var Data= {
             username: username,
             password: password,
             workStatus: $("#workStatus").val(),
@@ -129,15 +128,17 @@ $(function () {
             phone: phone,
             inviteCode: inviter,
 //          code: code,
-            nation:$("#nation").val()
+            //nation:$("#nation").val()
 
         };
+        var jsonData = JSON.stringify(Data) //转换成json格式
         $.ajax({
             cache: true,
             type: "POST",
             url: "/user/register",
             data: jsonData,// 你的formid
             async: false,
+            processData:false, 
             error: function (request) {
                 layer.alert("Connection error");
             },
@@ -148,9 +149,10 @@ $(function () {
                      });*/
                     layer.open({
                         title: '温馨提示'
-                        , content: '<h4>资料提交成功，请扫描微信二维码添加派单员微信号进行审核</h4>' +
-                        '<div style="text-align: center"><img style="width: 197px;height: 197px;" src="/pic/KID.jpg" ></div>',
+                        , content: '<h4>资料提交成功，请扫描二维码添加派单员QQ号进行审核</h4>' +
+                        '<div style="text-align: center"><img style="width: 197px;height: 197px;" src="/images/KID.jpg" ></div>',
                         yes: function (index, layero) {
+                        	
                             parent.layer.close(index);
                             window.location.href = '/login';
                         }
