@@ -187,26 +187,6 @@ def resetPwd():
     else:
         return jsonify(code=1, msg="密码修改失败！")  # TODO:暂时错误返回消息定为这个，后期细化错误原因
 
-# 查询订单
-@app.route('/orders/assignList', methods=['POST'])
-def assignList():
-    pass
-
-# 接订单
-@app.route('/orders/pickOrder')
-def pickOrder():
-    pass
-
-# 显示已接订单
-@app.route('/orders/myOrders', methods=['POST'])
-def myOrders():
-    pass
-
-# 显示已完成订单
-@app.route('/orders/finishOrders', methods=['POST'])
-def finishOrders():
-    pass
-
 # 返回图片
 # 图片类型暂时都定为jpeg
 @app.route('/images/<image_name>')
@@ -252,13 +232,50 @@ def templates_main():
     db.close()
     return render_template('main.html', toolName=toolname, code=invite_code)
 
+# 查询订单
 @app.route('/assignList.html')
 def templates_assignList():
     return render_template('assignList.html')
 
+@app.route('/orders/assignList', methods=['GET', 'POST'])
+def assignList():
+    path_pre = "/home/zanda/Desktop/Project/trading_platform/"
+    dict = {}
+    dict['id'] = 4000
+    dict['title'] = "基于Unix的微型操作系统"
+    dict['publishTime'] = "20180810000000"
+    dict['dueTime'] = "20190820000000"
+    dict['orderTag'] = "C"
+    dict['requireType'] = "操作系统"
+    dict['devPrice'] = "$10000"
+    dict['orderStatus'] = "辅导中"
+    dict['docFilePath'] = path_pre + "document/doc/test.doc"
+    dict['allFilePath'] = path_pre + "attachment/interface.zip"
+    dict['requirement'] = "详细需求请联系(qq)：1262167092~"
+    dict['devRemark'] = "请勿抄袭网上代码！"
+
+    result = [dict]
+    # data是一个列表，列表元素类型是字典
+    return jsonify(total=1, data=result)
+
+# 接订单
+@app.route('/orders/pickOrder')
+def pickOrder():
+    pass
+
+# 显示已完成订单
+@app.route('/orders/finishOrders', methods=['POST'])
+def finishOrders():
+    pass
+
+# 显示已接订单
 @app.route('/myOrders.html')
 def templates_myorders():
     return render_template('myOrders.html')
+
+@app.route('/orders/myOrders', methods=['POST'])
+def myOrders():
+    pass
 
 @app.route('/finishOrders.html')
 def templates_finishorders():
