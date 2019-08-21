@@ -13,7 +13,7 @@
     	<!--<link href="css/font-awesome.min.css" rel="stylesheet">-->
     	<link href="static/css/toastr.min.css" rel="stylesheet">
     	<link href="static/css/animate.css" rel="stylesheet">
-    	<link href="static/css/style.css" rel="stylesheet">
+    	<link href="static/css/style.css" rel="stylesheet"> 
     	<link rel="stylesheet" href="static/css/layer.css" id="layui_layer_skinlayercss" style="">
     	<link rel="stylesheet" href="static/css/layer(1).css" id="layuicss-layer">
 </head>
@@ -39,7 +39,7 @@
 								<!--<span class="block m-t-xs">
 									<strong class="font-bold">zhaang</strong>
 								</span> -->
-                <span class="text-muted text-xs block">{{name}}</span>
+								<span class="text-muted text-xs block">用户</span>
 							</span>
 						</a> 
 						<ul class="dropdown-menu animated fadeInRight m-t-xs">
@@ -49,25 +49,25 @@
 					</div>
 					</li> 
 					<li>
-						<a href="https://localhost:5000/index#">
+						<a href="http://localhost:5000/index#">
 							<i class="fa fa-tv"></i> 
 							<span class="nav-label">订单</span>
 							<span class="fa arrow"></span>
 						</a> 
 						<ul aria-expanded="false" class="nav nav-second-level collapse" style="height: 0px;"><li>
-							<a href="https://localhost:5000/ITKIM/orders/assignList" data-index="0" class="J_menuItem">
+							<a href="/orders/assignList" data-index="0" class="J_menuItem">
 								<i class="fa fa-battery-1"></i> 
 								<span>招募中订单</span>
 							</a>
 						</li>
 						</ul> 
 						<ul aria-expanded="false" class="nav nav-second-level collapse" style="height: 0px;">
-							<li><a href="https://localhost:5000/ITKIM/orders/myOrders" data-index="1" class="J_menuItem">
+							<li><a href="/orders/myOrders" data-index="1" class="J_menuItem">
 								<i class="fa fa-battery-2"></i> <span>我的辅导订单</span></a>
 							</li>
 						</ul> 
 						<ul aria-expanded="false" class="nav nav-second-level collapse" style="height: 0px;">
-							<li><a href="https://localhost:5000/ITKIM/orders/finishOrders" data-index="2" class="J_menuItem">
+							<li><a href="/orders/finishOrders" data-index="2" class="J_menuItem">
 								<i class="fa fa-battery-full"></i> 
 								<span>已完成订单</span>
 							</a>
@@ -80,33 +80,33 @@
 							<span class="nav-label">结算记录</span> 
 							<span class="fa arrow"></span></a> 
 							<ul aria-expanded="false" class="nav nav-second-level collapse" style="height: 0px;"><li>
-								<a href="https://www.tutorzzz.com/tutorzzz/settleRecord/settleList" data-index="3" class="J_menuItem">
+								<a href="http://localhost:5000/ITKIM/settleRecord/settleList" data-index="3" class="J_menuItem">
 									<i class="fa fa-envelope-open-o"></i> 
 									<span>结算中</span>
 								</a>
 							</li>
 							</ul> 
 							<ul aria-expanded="false" class="nav nav-second-level collapse" style="height: 0px;"><li>
-								<a href="https://www.tutorzzz.com/tutorzzz/settleRecord/finishList" data-index="4" class="J_menuItem">
+								<a href="http://localhost:5000/ITKIM/settleRecord/finishList" data-index="4" class="J_menuItem">
 									<i class="fa fa-envelope"></i> 
 									<span>已完成</span>
 								</a>
 							</li>
 							</ul>
 					</li> 
-					<li class="active"><a href="https://localhost:5000/index#">
+					<li class="active"><a href="http://localhost:5000/index#">
 						<i class="fa fa-users"></i> 
 						<span class="nav-label">我的邀请</span> 
 						<span class="fa arrow"></span></a> 
 						<ul aria-expanded="true" class="nav nav-second-level collapse in">
-							<li><a href="https://www.tutorzzz.com/tutorzzz/tutor/myInvite" data-index="5" class="J_menuItem">
+							<li><a href="http://localhost:5000/ITKIM/tutor/myInvite" data-index="5" class="J_menuItem">
 								<i class="fa fa-user-plus"></i>
 								<span>邀请列表</span>
 							</a>
 							</li>
 						</ul> 
 						<ul aria-expanded="true" class="nav nav-second-level collapse in">
-							<li><a href="https://www.tutorzzz.com/tutorzzz/tutor/myReward" data-index="6" class="J_menuItem">
+							<li><a href="http://localhost:5000/ITKIM/tutor/myReward" data-index="6" class="J_menuItem">
 								<i target="_blank" class="fa fa-vcard"></i> 
 								<span>邀请奖励</span>
 							</a>
@@ -114,7 +114,7 @@
 						</ul>
 					</li> 
 					<li>
-						<a href="https://www.tutorzzz.com/tutorzzz/notice/list" data-index="7" class="J_menuItem">
+						<a href="http://localhost:5000/ITKIM/notice/list" data-index="7" class="J_menuItem">
 							<i class="fa fa-clock-o"></i> 
 							<span class="nav-label">系统通知</span>
 						</a>
@@ -169,16 +169,16 @@
 			</div>
 	</div> 
 	<div id="content-main" class="row J_mainContent">
-		<iframe name="iframe0" width="100%" height="100%" src="./main.html" frameborder="0" data-id="index_v1.html" seamless="seamless" class="J_iframe" style=""></iframe> 
-		<iframe name="iframe0" width="100%" height="100%" src="./assignList.html" frameborder="0" data-id="/tutorzzz/orders/assignList" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
-		<iframe name="iframe1" width="100%" height="100%" src="./myOrders.html" frameborder="0" data-id="/tutorzzz/orders/myOrders" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
-		<iframe name="iframe2" width="100%" height="100%" src="./finishOrders.html" frameborder="0" data-id="/tutorzzz/orders/finishOrders" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
-		<iframe name="iframe3" width="100%" height="100%" src="./settleList.html" frameborder="0" data-id="/tutorzzz/settleRecord/settleList" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
-		<iframe name="iframe4" width="100%" height="100%" src="./finishList.html" frameborder="0" data-id="/tutorzzz/settleRecord/finishList" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
-		<iframe name="iframe5" width="100%" height="100%" src="./myInvite.html" frameborder="0" data-id="/tutorzzz/tutor/myInvite" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
-		<iframe name="iframe6" width="100%" height="100%" src="./myReward.html" frameborder="0" data-id="/tutorzzz/tutor/myReward" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
-		<iframe name="iframe7" width="100%" height="100%" src="./list.html" frameborder="0" data-id="/tutorzzz/notice/list" seamless="seamless" class="J_iframe" style="display: none;"></iframe></div> 
-		<div class="footer"><div class="pull-right">ITKIM辅导平台</div></div></div></div>
+		<iframe name="iframe0" width="100%" height="100%" src="/main.html" frameborder="0" data-id="index_v1.html" seamless="seamless" class="J_iframe" style=""></iframe> 
+		<iframe name="iframe0" width="100%" height="100%" src="/assignList.html" frameborder="0" data-id="/orders/assignList" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
+		<iframe name="iframe1" width="100%" height="100%" src="/myOrders.html" frameborder="0" data-id="/orders/myOrders" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
+		<iframe name="iframe2" width="100%" height="100%" src="/finishOrders.html" frameborder="0" data-id="/orders/finishOrders" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
+		<iframe name="iframe3" width="100%" height="100%" src="/settleList.html" frameborder="0" data-id="/ITKIM/settleRecord/settleList" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
+		<iframe name="iframe4" width="100%" height="100%" src="/finishList.html" frameborder="0" data-id="/ITKIM/settleRecord/finishList" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
+		<iframe name="iframe5" width="100%" height="100%" src="/myInvite.html" frameborder="0" data-id="/ITKIM/tutor/myInvite" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
+		<iframe name="iframe6" width="100%" height="100%" src="/myReward.html" frameborder="0" data-id="/ITKIM/tutor/myReward" seamless="seamless" class="J_iframe" style="display: none;"></iframe> 
+		<iframe name="iframe7" width="100%" height="100%" src="/list.html" frameborder="0" data-id="/ITKIM/notice/list" seamless="seamless" class="J_iframe" style="display: none;"></iframe></div> 
+  <div class="footer"><div class="pull-right">ITKIM辅导平台</div></div></div></div>
 <!-- 全局js -->
 <script src="static/js/jquery.min.js"></script>
 <script src="static/js/bootstrap.min.js"></script>
