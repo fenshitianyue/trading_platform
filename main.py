@@ -7,6 +7,7 @@ from flask import request
 from flask import jsonify
 from flask import Response
 from flask import session
+from flask import redirect, url_for
 from datetime import timedelta
 import json
 import MySQLdb
@@ -212,7 +213,8 @@ def generate_invite_code():
 def logout():
     # 删除当前用户保存在session中的数据(username)
     session.pop('username')
-    return render_template('login.html')
+    # return render_template('login.html')
+    return redirect(url_for('login'))
 
 # 其他页面
 @app.route('/main.html')
@@ -239,6 +241,12 @@ def templates_assignList():
 
 @app.route('/orders/assignList', methods=['GET', 'POST'])
 def assignList():
+    '''
+    业务逻辑：
+        1.从前端获取有关分页的信息
+        2.根据分页信息拼装SQL语句，在MySQL数据库中查找对应数据
+        3.将查找到的数据拼接成json格式发送给前端
+    '''
     path_pre = "/home/zanda/Desktop/Project/trading_platform/"
     dict = {}
     dict['id'] = 4000
@@ -247,7 +255,7 @@ def assignList():
     dict['dueTime'] = "20190820000000"
     dict['orderTag'] = "C"
     dict['requireType'] = "操作系统"
-    dict['devPrice'] = "$10000"
+    dict['devPrice'] = "10000"
     dict['orderStatus'] = "辅导中"
     dict['docFilePath'] = path_pre + "document/doc/test.doc"
     dict['allFilePath'] = path_pre + "attachment/interface.zip"
