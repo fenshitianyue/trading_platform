@@ -7,7 +7,8 @@ from flask import request
 from flask import jsonify
 from flask import Response
 from flask import session
-from flask import redirect, url_for
+from flask import redirect, url_for # url重定向
+from flask import send_from_directory # 文件下载
 from datetime import timedelta
 import json
 import MySQLdb
@@ -234,6 +235,16 @@ def templates_main():
     db.close()
     return render_template('main.html', toolName=toolname, code=invite_code)
 
+# 文件下载
+# TODO:如果文件名是中文的，这里可能会有问题
+# TODO:如果需要下载的文件是pdf文件，可能需要另作一番处理
+@app.route('/download/<path:filepath>', methods=['GET'])
+def download(filepath):
+    path_pre = "/home/zanda/Desktop/Project/trading_platform/"
+    filepath = path_pre + filepath
+    (dirname, filename) = os.path.split(filepath)
+    return send_from_directory(dirname, filename, as_attachment=True)
+
 # 查询订单
 @app.route('/assignList.html')
 def templates_assignList():
@@ -247,7 +258,7 @@ def assignList():
         2.根据分页信息拼装SQL语句，在MySQL数据库中查找对应数据
         3.将查找到的数据拼接成json格式发送给前端
     '''
-    path_pre = "/home/zanda/Desktop/Project/trading_platform/"
+    path_pre = "/download/"
     dict = {}
     dict['id'] = 4000
     dict['title'] = "基于Unix的微型操作系统"
