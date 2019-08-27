@@ -7,8 +7,8 @@ from flask import request
 from flask import jsonify
 from flask import Response
 from flask import session
-from flask import redirect, url_for # url重定向
-from flask import send_from_directory # 文件下载
+from flask import redirect, url_for  # url重定向
+from flask import send_from_directory  # 文件下载
 from datetime import timedelta
 import json
 import MySQLdb
@@ -259,23 +259,36 @@ def assignList():
         3.将查找到的数据拼接成json格式发送给前端
     '''
     path_pre = "/download/"
-    dict = {}
-    dict['id'] = 4000
-    dict['title'] = "基于Unix的微型操作系统"
-    dict['publishTime'] = "20180810000000"
-    dict['dueTime'] = "20190820000000"
-    dict['orderTag'] = "C"
-    dict['requireType'] = "操作系统"
-    dict['devPrice'] = "10000"
-    dict['orderStatus'] = "辅导中"
-    dict['docFilePath'] = path_pre + "document/doc/test.doc"
-    dict['allFilePath'] = path_pre + "attachment/interface.zip"
-    dict['requirement'] = "详细需求请联系(qq)：1262167092~"
-    dict['devRemark'] = "请勿抄袭网上代码！"
-
-    result = [dict]
+    # dict = {}
+    # dict['id'] = 4000
+    # dict['title'] = "基于Unix的微型操作系统"
+    # dict['orderTag'] = "C"
+    # dict['publishTime'] = "20180810000000"
+    # dict['dueTime'] = "20190820000000"
+    # dict['requireType'] = "操作系统"
+    # dict['devPrice'] = "10000"
+    # dict['orderStatus'] = "辅导中"
+    # dict['docFilePath'] = path_pre + "document/doc/test.doc"
+    # dict['allFilePath'] = path_pre + "attachment/interface.zip"
+    # dict['requirement'] = "详细需求请联系(qq)：1262167092~"
+    # dict['devRemark'] = "请勿抄袭网上代码！"
+    # result = [dict]
     # data是一个列表，列表元素类型是字典
-    return jsonify(total=1, data=result)
+    # return jsonify(total=1, data=result)
+
+    # 从前端获取分页相关信息
+    data = request.get_json()
+    data = json.loads(request.get_data())
+    pageNumber = data['pageNumber']
+    pageSize = data['pageSize']
+    # 连接数据库
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    # 拼接查询SQL
+    sql = "select * from dev limit " + str(int(pageNumber) * int(pageSize)) + "," + pageSize
+    cursor.execute(sql)
+    # TODO:根据查询结果拼接响应数据格式
+
 
 # 接订单
 @app.route('/orders/pickOrder')
