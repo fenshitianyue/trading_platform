@@ -35,7 +35,7 @@ def main():
     if username:
         return render_template('index.html', name=username)
     else:  # 如果session中不存在username，那么返回登陆页面
-        return render_template('login.html')
+        return redirect(url_for('login'))
 
 # 登陆主界面
 @app.route('/login', methods=['GET', 'POST'])
