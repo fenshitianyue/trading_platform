@@ -280,9 +280,8 @@ def assignList():
         dict = {}
         dict['id'] = row[0]
         dict['title'] = row[1]
-        # 对时间戳做一个处理
-        dict['publishTime'] = row[2]
-        dict['dueTime'] = row[3]
+        dict['publishTime'] = str(row[2])  # 对时间戳做一个处理
+        dict['dueTime'] = str(row[3])  # 对时间戳做一个处理
         dict['orderTag'] = row[4]
         dict['requireType'] = row[5]
         dict['devPrice'] = row[6]
