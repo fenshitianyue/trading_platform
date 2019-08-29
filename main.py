@@ -341,7 +341,7 @@ def finishOrders():
     业务逻辑：
         1.
     '''
-    # TODO:
+    # TODO
     pass
 
 # 显示已接订单
@@ -349,7 +349,7 @@ def finishOrders():
 def templates_myorders():
     return render_template('myOrders.html')
 
-@app.route('/orders/myOrders', methods=['POST'])
+@app.route('/orders/myOrders')
 def myOrders():
     '''
     业务逻辑(临时)：
@@ -358,8 +358,46 @@ def myOrders():
         3.根据获取到的order_num从orders表中查找对应订单信息
         4.将信息拼装成对应json格式发送给前端
     '''
-    # TODO:
-    pass
+    path_pre = "/download/"
+    username = session.get('username', None)
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    # 更新订单对应表
+    sql = "select order_num from trading where dev_username = '" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    tmp = []
+    for row in result:
+        tmp.append(int(row[0]))
+    num_set = tuple(tmp)
+    sql = "select * from orders where order_num in " + str(num_set)
+    sql = sql[0:-2]
+    sql = sql + ")"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    if not results:
+        return jsonify(total=0, data=[])
+    num = 0
+    response = []
+    for row in results:
+        dict = {}
+        dict['id'] = row[0]
+        dict['title'] = row[1]
+        dict['publishTime'] = str(row[2])  # 对时间戳做一个处理
+        dict['dueTime'] = str(row[3])  # 对时间戳做一个处理
+        dict['orderTag'] = row[4]
+        dict['requireType'] = row[5]
+        dict['devPrice'] = row[6]
+        dict['docFilePath'] = path_pre + row[7]
+        dict['allFilePath'] = path_pre + row[8]
+        dict['requirement'] = row[9]
+        dict['devRemark'] = row[10]
+        dict['orderStatus'] = row[11]
+        dict['pickFlag'] = row[12]
+        response.append(dict)
+        num = num + 1
+    db.close()
+    return jsonify(total=num, data=response)
 
 @app.route('/settleList.html')
 def templates_settlelist():
