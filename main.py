@@ -381,6 +381,11 @@ def myOrders():
     response = []
     for row in results:
         dict = {}
+        dict['orderStatus'] = row[11]
+        if dict['orderStatus'] == "辅导中":
+            dict['orderStatus'] = "未完成"
+        elif dict['orderStatus'] == "已完成":
+            continue
         dict['id'] = row[0]
         dict['title'] = row[1]
         dict['publishTime'] = str(row[2])  # 对时间戳做一个处理
@@ -392,7 +397,6 @@ def myOrders():
         dict['allFilePath'] = path_pre + row[8]
         dict['requirement'] = row[9]
         dict['devRemark'] = row[10]
-        dict['orderStatus'] = row[11]
         dict['pickFlag'] = row[12]
         response.append(dict)
         num = num + 1
