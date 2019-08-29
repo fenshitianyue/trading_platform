@@ -61,20 +61,19 @@ var cols = [
         field: 'requirement',
         title: '订单需求', sortable: true,
         formatter: function (value, row, index) {
-            if(value.length < 50) {
+         
                 return value;
-            }
-            return '<div title="'+value+'">'+value.substr(0,50)+'...</div>';
+         
         }
     },
     {
         field: 'devRemark',
         title: '开发备注', sortable: true,
         formatter: function (value, row, index) {
-            if(value.length < 50) {
+           
                 return value;
-            }
-            return '<div title="'+value+'">'+value.substr(0,50)+'...</div>';
+        
+        
         }
     }
 
