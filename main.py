@@ -297,13 +297,51 @@ def assignList():
     return jsonify(total=num, data=response)
 
 # 接订单
-@app.route('/orders/pickOrder')
+@app.route('/orders/pickOrder', methods=['POST'])
 def pickOrder():
-    pass
+    '''
+    业务逻辑：
+        1.从前端获取订单号
+        2.从session中获取当前开发者的username
+        3.在(开发者-订单)表中插入对应的一条数据(username<->order_num)
+        4.更新订单表中对应订单的状态
+        5.更新当前用户开发中订单表
+        6.拼接响应返回给前端
+    '''
+    order_num = request.values.get('id')
+    # print "id:" + order_num
+    username = session.get('username', None)
+    # print "username:" + username
+
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    # 更新订单对应表
+    sql = "insert into trading(order_num, dev_username) values(" + str(order_num) + ",'" + username + "')"
+    cursor.execute(sql)
+    # TODO:这里可能要用异常判断一下commit是否成功
+    db.commit()
+    # 更新订单表
+    sql = "update orders set order_status = '辅导中', order_flag = 1 where order_num = " + str(order_num)
+    cursor.execute(sql)
+    # TODO:这里可能要用异常判断一下commit是否成功
+    db.commit()
+    # TODO:更新当前用户开发中订单表
+    db.close()
+    # 根据查询结果拼接响应数据格式
+    return jsonify(code=0, msg="接单成功！")
 
 # 显示已完成订单
+@app.route('/finishOrders.html')
+def templates_finishorders():
+    return render_template('finishOrders.html')
+
 @app.route('/orders/finishOrders', methods=['POST'])
 def finishOrders():
+    '''
+    业务逻辑：
+        1.
+    '''
+    # TODO:
     pass
 
 # 显示已接订单
@@ -313,11 +351,15 @@ def templates_myorders():
 
 @app.route('/orders/myOrders', methods=['POST'])
 def myOrders():
+    '''
+    业务逻辑(临时)：
+        1.从session获取当前用户的username
+        2.从trading表中查找当前用户所接订单的order_num
+        3.根据获取到的order_num从orders表中查找对应订单信息
+        4.将信息拼装成对应json格式发送给前端
+    '''
+    # TODO:
     pass
-
-@app.route('/finishOrders.html')
-def templates_finishorders():
-    return render_template('finishOrders.html')
 
 @app.route('/settleList.html')
 def templates_settlelist():
