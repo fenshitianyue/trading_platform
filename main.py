@@ -285,8 +285,14 @@ def assignList():
         dict['orderTag'] = row[4]
         dict['requireType'] = row[5]
         dict['devPrice'] = row[6]
-        dict['docFilePath'] = path_pre + row[7]
-        dict['allFilePath'] = path_pre + row[8]
+        if not row[7]:
+            dict['docFilePath'] = "null"
+        else:
+            dict['docFilePath'] = path_pre + row[7]
+        if not row[8]:
+            dict['allFilePath'] = "null"
+        else:
+            dict['allFilePath'] = path_pre + row[8]
         dict['requirement'] = row[9]
         dict['devRemark'] = row[10]
         dict['orderStatus'] = row[11]
@@ -342,14 +348,14 @@ def finishOrders():
         1.
     '''
     # TODO
-    pass
+    return jsonify(total=0, data=[])
 
 # 显示已接订单
 @app.route('/myOrders.html')
 def templates_myorders():
     return render_template('myOrders.html')
 
-@app.route('/orders/myOrders')
+@app.route('/orders/myOrders', methods=['POST'])
 def myOrders():
     '''
     业务逻辑(临时)：
