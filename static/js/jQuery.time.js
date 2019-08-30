@@ -210,13 +210,13 @@ function formValidator2() {
                 }
             },
             // 公司
-            company: {
-                validators: {
-                    notEmpty: {
-                        message: "请输入公司"
-                    }
-                }
-            },
+//          company: {
+//              validators: {
+//                  notEmpty: {
+//                      message: "请输入公司"
+//                  }
+//              }
+//          },
             // 微信
             wxId: {
                 validators: {
