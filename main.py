@@ -267,15 +267,11 @@ def assignList():
     # 连接数据库
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
-    # 拼接查询SQL
     # 先查询一下一共有多少条订单信息
-    sql = "select * from orders"
+    sql = "select count(*) from orders"
     cursor.execute(sql)
-    results = cursor.fetchall()
-    num = 0
-    for rows in results:
-        num = num + 1
-    # 然后查询出当页的订单信息
+    num = cursor.fetchone()
+    # 然后查询出当前页的订单信息
     sql = "select * from orders limit " + str((pageNumber-1) * pageSize) + "," + str(pageSize)
     cursor.execute(sql)
     # 根据查询结果拼接响应数据格式
