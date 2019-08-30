@@ -268,13 +268,20 @@ def assignList():
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     # 拼接查询SQL
+    # 先查询一下一共有多少条订单信息
+    sql = "select * from orders"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    num = 0
+    for rows in results:
+        num = num + 1
+    # 然后查询出当页的订单信息
     sql = "select * from orders limit " + str((pageNumber-1) * pageSize) + "," + str(pageSize)
     cursor.execute(sql)
     # 根据查询结果拼接响应数据格式
     results = cursor.fetchall()
     if not results:
         return jsonify(total=0, data=[])
-    num = 0
     response = []
     for row in results:
         dict = {}
@@ -286,11 +293,11 @@ def assignList():
         dict['requireType'] = row[5]
         dict['devPrice'] = row[6]
         if not row[7]:
-            dict['docFilePath'] = "null"
+            dict['docFilePath'] = ""
         else:
             dict['docFilePath'] = path_pre + row[7]
         if not row[8]:
-            dict['allFilePath'] = "null"
+            dict['allFilePath'] = ""
         else:
             dict['allFilePath'] = path_pre + row[8]
         dict['requirement'] = row[9]
@@ -298,7 +305,6 @@ def assignList():
         dict['orderStatus'] = row[11]
         dict['pickFlag'] = row[12]
         response.append(dict)
-        num = num + 1
     db.close()
     return jsonify(total=num, data=response)
 
