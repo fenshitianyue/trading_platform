@@ -435,18 +435,28 @@ def templates_list():
 # 消息通知
 @app.route('/notice/list', methods=['POST'])
 def notice_list():
-    tmp = {}
-    tmp['title'] = "通知标题"
-    tmp['content'] = "这是一条测试通知"
-    tmp['createTime'] = "20190901214100"
     response = []
-    response.append(tmp)
+    for i in range(1, 10):
+        tmp = {}
+        tmp['id'] = i
+        tmp['title'] = "通知标题"
+        tmp['content'] = "这是一条测试通知"
+        tmp['createTime'] = "20190901214100"
+        tmp['status'] = 0
+        response.append(tmp)
+    # tmp = {}
+    # tmp['id'] = 1
+    # tmp['title'] = "通知标题"
+    # tmp['content'] = "这是一条测试通知"
+    # tmp['status'] = 0
+    # tmp['createTime'] = "2019-09-01 21:41:00"
+    # response.append(tmp)
     return jsonify(total=1, data=response)
 
 # 消息已阅
-@app.route('/notice/read/undefined', methods=['POST'])
-def notice_read():
-# return jsonify(code=1)
+@app.route('/notice/read/<id>', methods=['POST'])
+def notice_read(id):
+#    return jsonify(code=1)
     return jsonify(code=0)
 
 
