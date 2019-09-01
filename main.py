@@ -137,6 +137,7 @@ def user_register():
     education = data['education'] # 教育水平 (string) 编码是unocode,查看需要decode
     phone = data['phone'] # 手机号 (string)
     inviteCode = data['inviteCode'] # 邀请码 (string)
+    print data['inviteCode']
     # nation = data['nation'] # 手机号所属区域 (int) TODO:暂不考虑，统一插入0
     # 新用户的邀请码
     newInviteCode = generate_invite_code()
@@ -430,6 +431,23 @@ def templates_myreword():
 @app.route('/list.html')
 def templates_list():
     return render_template('list.html')
+
+# 消息通知
+@app.route('/notice/list', methods=['POST'])
+def notice_list():
+    tmp = {}
+    tmp['title'] = "通知标题"
+    tmp['content'] = "这是一条测试通知"
+    tmp['createTime'] = "20190901214100"
+    response = []
+    response.append(tmp)
+    return jsonify(total=1, data=response)
+
+# 消息已阅
+@app.route('/notice/read/undefined', methods=['POST'])
+def notice_read():
+# return jsonify(code=1)
+    return jsonify(code=0)
 
 
 if __name__ == '__main__':
