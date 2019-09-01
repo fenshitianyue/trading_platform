@@ -435,27 +435,53 @@ def templates_list():
 # 消息通知
 @app.route('/notice/list', methods=['POST'])
 def notice_list():
+    '''
+    业务逻辑：
+        1.从前端获取分页的有关信息
+        2.根据获取到的分页信息拼接SQL语句，从数据库查找订单记录
+        3.将查到的结果拼装成json格式发送给前端
+    '''
+    # 从前端获取分页相关信息
+    data = request.get_json()
+    data = json.loads(request.get_data())
+    pageNumber = data['pageNumber']
+    pageSize = data['pageSize']
+    # 连接数据库
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    # 先查询一下一共有多少条系统通知
+    sql = "select count(*) from sys_notice"
+    cursor.execute(sql)
+    num = cursor.fetchone()
+    # 然后查询出当前页的系统通知信息
+    sql = "select * from sys_notice limit " + str((pageNumber-1) * pageSize) + "," + str(pageSize)
+    cursor.execute(sql)
+    # 根据查询结果拼接响应数据格式
+    results = cursor.fetchall()
+    if not results:
+        return jsonify(total=0, data=[])
     response = []
-    for i in range(1, 10):
+    for row in results:
         tmp = {}
-        tmp['id'] = i
-        tmp['title'] = "通知标题"
-        tmp['content'] = "这是一条测试通知"
-        tmp['createTime'] = "20190901214100"
-        tmp['status'] = 0
+        tmp['id'] = row[0]
+        tmp['title'] = row[1]
+        tmp['content'] = row[2]
+        # 对时间戳做一个处理
+        tmp['createTime'] = str(row[3])
+        tmp['status'] = row[4]
         response.append(tmp)
-    # tmp = {}
-    # tmp['id'] = 1
-    # tmp['title'] = "通知标题"
-    # tmp['content'] = "这是一条测试通知"
-    # tmp['status'] = 0
-    # tmp['createTime'] = "2019-09-01 21:41:00"
-    # response.append(tmp)
-    return jsonify(total=1, data=response)
+    db.close()
+    return jsonify(total=num, data=response)
 
 # 消息已阅
 @app.route('/notice/read/<id>', methods=['POST'])
 def notice_read(id):
+    '''
+    业务逻辑：
+        1.从url获取订单id
+        2.修改数据库中对应订单的'阅读状态'字段
+        3.将结果拼接成json格式发送给前端
+    '''
 #    return jsonify(code=1)
     return jsonify(code=0)
 
