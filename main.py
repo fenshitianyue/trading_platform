@@ -428,11 +428,11 @@ def templates_myInvite():
 def templates_myreword():
     return render_template('myReward.html')
 
+# 消息通知
 @app.route('/list.html')
 def templates_list():
     return render_template('list.html')
 
-# 消息通知
 @app.route('/notice/list', methods=['POST'])
 def notice_list():
     '''
@@ -482,7 +482,13 @@ def notice_read(id):
         2.修改数据库中对应订单的'阅读状态'字段
         3.将结果拼接成json格式发送给前端
     '''
-#    return jsonify(code=1)
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    sql = "update sys_notice set status=1 where id = " + str(id)
+    cursor.execute(sql)
+    # TODO:这里对commit应该做一个异常处理
+    db.commit()
+    db.close()
     return jsonify(code=0)
 
 
