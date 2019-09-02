@@ -44,8 +44,8 @@ function load() {
                 // 返回false将会终止请求
                 responseHandler: function (res) {
                     return {
-                        "total": res.data.total,//总数
-                        "rows": res.data.data   //数据
+                        "total": res.total,//总数
+                        "rows": res.data   //数据
                     };
                 },
                 columns: [
