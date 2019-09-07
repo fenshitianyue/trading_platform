@@ -471,6 +471,14 @@ def notice_list():
         tmp['status'] = row[4]
         response.append(tmp)
     db.close()
+    # response = []
+    # tmp = {}
+    # tmp['id'] = 1
+    # tmp['title'] = "测试标题"
+    # tmp['content'] = "测试通知"
+    # tmp['createTime'] = "2019-09-02 16:07:00"
+    # tmp['status'] = 0
+    # response.append(tmp)
     return jsonify(total=num, data=response)
 
 # 消息已阅
