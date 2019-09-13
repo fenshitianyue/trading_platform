@@ -350,7 +350,42 @@ def finishOrders():
     业务逻辑：
         1.
     '''
-    # TODO
+    data = request.get_json()
+    data = json.loads(request.get_data())
+    pageNumber = data['pageNumber']
+    pageSize = data['pageSize']
+    # 连接数据库
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    # 先查询一下一共有多少条订单信息
+    sql = "select count(*) from orders"
+    cursor.execute(sql)
+    num = cursor.fetchone()
+    # 然后查询出当前页的订单信息
+    sql = "select * from orders limit " + str((pageNumber-1) * pageSize) + "," + str(pageSize)
+    cursor.execute(sql)
+    # 根据查询结果拼接响应数据格式
+    results = cursor.fetchall()
+    if not results:
+        return jsonify(total=0, data=[])
+    response = []
+    for row in results:
+        dict = {}
+        dict['id'] = row[0]
+        dict['title'] = row[1]
+        dict['publishTime'] = str(row[2])  # 对时间戳做一个处理
+        dict['dueTime'] = str(row[3])  # 对时间戳做一个处理
+        dict['orderTag'] = row[4]
+        dict['requireType'] = row[5]
+        dict['devPrice'] = row[6]
+        dict['requirement'] = row[9]
+        dict['devRemark'] = row[10]
+        dict['orderStatus'] = row[11]
+        dict['pickFlag'] = row[12]
+        # TODO:获取申请状态
+        # TODO:获取结算状态
+        response.append(dict)
+    db.close()
     return jsonify(total=0, data=[])
 
 # 显示已接订单
