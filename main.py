@@ -405,21 +405,35 @@ def templates_finishorders():
 
 @app.route('/orders/finishOrders', methods=['POST'])
 def finishOrders():
-    '''
-    业务逻辑：
-        1.
-    '''
+    # 获取分页相关信息
     data = request.get_json()
     data = json.loads(request.get_data())
     pageNumber = data['pageNumber']
     pageSize = data['pageSize']
+    # 获取当前用户
+    username = session.get('username', None)
     # 连接数据库
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
-    # 先查询一下一共有多少条订单信息
-    sql = "select count(*) from orders"
+    sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
-    num = cursor.fetchone()
+    result = cursor.fetchall()
+    tmp = []
+    num = 0
+    for row in result:
+        num += 1
+        tmp.append(int(row[0]))
+    num_set = tuple(tmp)
+    sql = "select * from orders where order_num in " + str(num_set)
+    sql = sql[0:-2]
+    sql = sql + ")"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    if not results:
+        return jsonify(total=0, data=[])
+    num = 0
+    response = []
+    # TODO
     # 然后查询出当前页的订单信息
     sql = "select * from orders limit " + str((pageNumber-1) * pageSize) + "," + str(pageSize)
     cursor.execute(sql)
