@@ -353,6 +353,7 @@ def myOrders():
         3.根据获取到的order_num从orders表中查找对应订单信息
         4.将信息拼装成对应json格式发送给前端
     '''
+    # TODO:先不做分页处理
     path_pre = "/download/"
     username = session.get('username', None)
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
@@ -394,7 +395,7 @@ def myOrders():
         dict['devRemark'] = row[10]
         dict['pickFlag'] = row[12]
         response.append(dict)
-        num = num + 1
+        num += 1
     db.close()
     return jsonify(total=num, data=response)
 
@@ -405,11 +406,12 @@ def templates_finishorders():
 
 @app.route('/orders/finishOrders', methods=['POST'])
 def finishOrders():
+    # TODO:先不做分页处理
     # 获取分页相关信息
-    data = request.get_json()
-    data = json.loads(request.get_data())
-    pageNumber = data['pageNumber']
-    pageSize = data['pageSize']
+    # data = request.get_json()
+    # data = json.loads(request.get_data())
+    # pageNumber = data['pageNumber']
+    # pageSize = data['pageSize']
     # 获取当前用户
     username = session.get('username', None)
     # 连接数据库
@@ -419,9 +421,7 @@ def finishOrders():
     cursor.execute(sql)
     result = cursor.fetchall()
     tmp = []
-    num = 0
     for row in result:
-        num += 1
         tmp.append(int(row[0]))
     num_set = tuple(tmp)
     sql = "select * from orders where order_num in " + str(num_set)
@@ -431,18 +431,12 @@ def finishOrders():
     results = cursor.fetchall()
     if not results:
         return jsonify(total=0, data=[])
+    response = []
     num = 0
-    response = []
-    # TODO
-    # 然后查询出当前页的订单信息
-    sql = "select * from orders limit " + str((pageNumber-1) * pageSize) + "," + str(pageSize)
-    cursor.execute(sql)
-    # 根据查询结果拼接响应数据格式
-    results = cursor.fetchall()
-    if not results:
-        return jsonify(total=0, data=[])
-    response = []
     for row in results:
+        dict['orderStatus'] = row[11]
+        if dict['orderStatus'] == "辅导中" or dict['orderStatus'] == "未完成":
+            continue
         dict = {}
         dict['id'] = row[0]
         dict['title'] = row[1]
@@ -464,6 +458,7 @@ def finishOrders():
         else:
             dict['isBillable'] = 1
         response.append(dict)
+        num += 1
     db.close()
     return jsonify(total=num, data=response)
 
