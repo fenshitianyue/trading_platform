@@ -389,8 +389,14 @@ def myOrders():
         dict['orderTag'] = row[4]
         dict['requireType'] = row[5]
         dict['devPrice'] = row[6]
-        dict['docFilePath'] = path_pre + row[7]
-        dict['allFilePath'] = path_pre + row[8]
+        if not row[7]:  # 如果文档路径不存在
+            dict['docFilePath'] = ""
+        else:
+            dict['docFilePath'] = path_pre + row[7]
+        if not row[8]:  # 如果附件路径不存在
+            dict['allFilePath'] = ""
+        else:
+            dict['allFilePath'] = path_pre + row[8]
         dict['requirement'] = row[9]
         dict['devRemark'] = row[10]
         dict['pickFlag'] = row[12]
@@ -434,10 +440,10 @@ def finishOrders():
     response = []
     num = 0
     for row in results:
+        dict = {}
         dict['orderStatus'] = row[11]
         if dict['orderStatus'] == "辅导中" or dict['orderStatus'] == "未完成":
             continue
-        dict = {}
         dict['id'] = row[0]
         dict['title'] = row[1]
         dict['publishTime'] = str(row[2])  # 对时间戳做一个处理
@@ -445,7 +451,11 @@ def finishOrders():
         dict['orderTag'] = row[4]
         dict['requireType'] = row[5]
         dict['devPrice'] = row[6]
-        dict['billStatus'] = row[14]  # 申请状态只有 0:false/1:true
+        # 申请状态只有 0:false/1:true
+        if not row[14] or row[14] == 0:
+            dict['billStatus'] = 0
+        else:
+            dict['billStatus'] = 1
         '''
         结算状态：
             0.申请等待售后
@@ -461,6 +471,10 @@ def finishOrders():
         num += 1
     db.close()
     return jsonify(total=num, data=response)
+
+@app.route('/settleRecord/settle/<id>', methods=['POST'])
+def settle_record(id):
+    pass
 
 @app.route('/settleList.html')
 def templates_settlelist():
