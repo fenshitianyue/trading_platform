@@ -472,9 +472,18 @@ def finishOrders():
     db.close()
     return jsonify(total=num, data=response)
 
-@app.route('/settleRecord/settle/<id>', methods=['POST'])
+@app.route('/settleRecord/settle/<id>')
 def settle_record(id):
-    pass
+    # 更新订单表中指定id订单的结算状态
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    sql = "update orders set order_appli = 1 where order_num = " + str(id)
+    cursor.execute(sql)
+    # TODO:这里对commit应该做一个异常处理
+    db.commit()
+    db.close()
+    # TODO:返回状态暂定，等前端补充接口文档
+    return jsonify(code=0)
 
 @app.route('/settleList.html')
 def templates_settlelist():
