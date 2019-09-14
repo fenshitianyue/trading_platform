@@ -489,6 +489,49 @@ def settle_record(id):
 def templates_settlelist():
     return render_template('settleList.html')
 
+@app.route('/settleRecord/settleList', methods=['POST'])
+def settle_list():
+    # TODO:暂不做分页处理
+
+    # 获取当前用户
+    username = session.get('username', None)
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    sql = "select order_num from trading where dev_username = '" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    tmp = []
+    for row in result:
+        tmp.append(int(row[0]))
+    num_set = tuple(tmp)
+    sql = "select * from orders where order_num in " + str(num_set)
+    sql = sql[0:-2]
+    sql = sql + ")"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    if not results:
+        return jsonify(total=0, data=[])
+    response = []
+    num = 0
+    for row in results:
+        dict = {}
+        dict['orderStatus'] = row[11]  # TODO
+        if dict['orderStatus'] == "辅导中" or dict['orderStatus'] == "未完成":
+            continue
+        dict['orderId'] = row[0]
+        dict['payType'] = row[17]
+        if dict['payType'] == 1:
+            dict['aliAccount'] = row[18]
+        else:
+            dict['backAccount'] = row[19]
+        dict['totalFee'] = 0  # TODO:结算金额计算公式
+        dict['applyTime'] = row[15]
+        dict['settleStatus'] = 0  # TODO
+        response.append(dict)
+        num += 1
+    db.close()
+    return jsonify(total=num, data=response)
+
 @app.route('/finishList.html')
 def templates_finishList():
     return render_template('finishList.html')
