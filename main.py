@@ -483,8 +483,6 @@ def settle_record(id):
     db.commit()  # TODO:这里对commit应该做一个异常处理
 
     db.close()
-    # TODO:返回状态暂定，等前端补充接口文档
-    # return jsonify(code=0)
     response = "申请结算成功!"
     return response
 
@@ -498,11 +496,14 @@ def settle_list():
 
     # 获取当前用户
     username = session.get('username', None)
+
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
+
     sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
     result = cursor.fetchall()
+
     tmp = []
     for row in result:
         tmp.append(int(row[0]))
@@ -512,23 +513,24 @@ def settle_list():
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
+
     if not results:
         return jsonify(total=0, data=[])
+
     response = []
     num = 0
     for row in results:
-        dict = {}
-        dict['orderStatus'] = row[11]  # TODO
-        if dict['orderStatus'] == "辅导中" or dict['orderStatus'] == "未完成":
+        if row[11] == "辅导中" or row[11] == "未完成":
             continue
+        dict = {}
         dict['orderId'] = row[0]
-        dict['payType'] = row[17]
+        dict['payType'] = row[16]
         if dict['payType'] == 1:
-            dict['aliAccount'] = row[18]
+            dict['aliAccount'] = row[17]
         else:
-            dict['backAccount'] = row[19]
+            dict['backAccount'] = row[18]
         dict['totalFee'] = 0  # TODO:结算金额计算公式
-        dict['applyTime'] = row[15]
+        dict['applyTime'] = row[14]
         dict['settleStatus'] = 0  # TODO
         response.append(dict)
         num += 1
