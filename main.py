@@ -25,7 +25,7 @@ sys.setdefaultencoding('utf8')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '654321'  # 使用session前设置密匙
-app.config['PREMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # 设置session的过期时间
+app.config['PREMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # 设置session的过期时间
 
 # 网站主页面
 @app.route('/main')
@@ -537,8 +537,8 @@ def settle_list():
             dict['aliAccount'] = row[17]
         else:
             dict['backAccount'] = row[18]
-        dict['totalFee'] = 0  # TODO:结算金额计算公式
-        dict['applyTime'] = row[14]
+        dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
+        dict['applyTime'] = str(row[14]) # 对时间戳做一个处理
         dict['settleStatus'] = 0  # TODO
         response.append(dict)
         num += 1
