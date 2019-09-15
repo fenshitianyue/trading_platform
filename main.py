@@ -10,6 +10,7 @@ from flask import session
 from flask import redirect, url_for  # url重定向
 from flask import send_from_directory  # 文件下载
 from datetime import timedelta
+from datetime import datetime
 import json
 import MySQLdb
 import os
@@ -479,6 +480,13 @@ def settle_record(id):
     cursor = db.cursor()
 
     sql = "update orders set order_appli = 1, order_settlement = 0 where order_num = " + str(id)
+    cursor.execute(sql)
+    db.commit()  # TODO:这里对commit应该做一个异常处理
+
+    # 获取当前系统时间作为"申请时间"提交到数据库
+    now_time = str(datetime.now())
+    now_time = now_time[0:-7]
+    sql = "update orders set order_appli_time = '" + now_time + "'" + " where order_num = " + str(id)
     cursor.execute(sql)
     db.commit()  # TODO:这里对commit应该做一个异常处理
 
