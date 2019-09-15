@@ -452,7 +452,7 @@ def finishOrders():
         dict['requireType'] = row[5]
         dict['devPrice'] = row[6]
         # 申请状态只有 0:false/1:true
-        if not row[14] or row[14] == 0:
+        if not row[13] or row[13] == 0:
             dict['billStatus'] = 0
         else:
             dict['billStatus'] = 1
@@ -463,7 +463,7 @@ def finishOrders():
             2.结算完成
             3.结算中
         '''
-        if row[16] == 0:
+        if row[15] == 0:
             dict['isBillable'] = 0
         else:
             dict['isBillable'] = 1
@@ -477,13 +477,16 @@ def settle_record(id):
     # 更新订单表中指定id订单的结算状态
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
-    sql = "update orders set order_appli = 1 where order_num = " + str(id)
+
+    sql = "update orders set order_appli = 1, order_settlement = 0 where order_num = " + str(id)
     cursor.execute(sql)
-    # TODO:这里对commit应该做一个异常处理
-    db.commit()
+    db.commit()  # TODO:这里对commit应该做一个异常处理
+
     db.close()
     # TODO:返回状态暂定，等前端补充接口文档
-    return jsonify(code=0)
+    # return jsonify(code=0)
+    response = "申请结算成功!"
+    return response
 
 @app.route('/settleList.html')
 def templates_settlelist():
