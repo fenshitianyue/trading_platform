@@ -537,8 +537,9 @@ def settle_list():
             dict['aliAccount'] = row[17]
         else:
             dict['backAccount'] = row[18]
+        dict['payAccount'] = dict['payType']
         dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
-        dict['applyTime'] = str(row[14]) # 对时间戳做一个处理
+        dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
         dict['settleStatus'] = 0  # TODO
         response.append(dict)
         num += 1
