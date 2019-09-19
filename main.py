@@ -608,9 +608,19 @@ def finishList():
 def templates_myInvite():
     return render_template('myInvite.html')
 
+# TODO
+@app.route('/myInvite', methods=['POST'])
+def myInvite():
+    pass
+
 @app.route('/myReward.html')
 def templates_myreword():
     return render_template('myReward.html')
+
+# TODO
+@app.route('/myReward', methods=['POST'])
+def myReward():
+    pass
 
 # 消息通知
 @app.route('/list.html')
