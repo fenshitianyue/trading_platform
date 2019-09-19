@@ -34,6 +34,13 @@ UPLOAD_FOLDER = './document/doc/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'doc', 'docx'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# 初始化数据库
+# TODO:后面考虑把数据库初始化和终止代码提取出来做一个统一的初始化
+def init_db():
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    return cursor
+
 # 网站主页面
 @app.route('/main')
 def main():
@@ -544,10 +551,9 @@ def settle_list():
             dict['aliAccount'] = row[17]
         else:
             dict['backAccount'] = row[18]
-        # dict['payAccount'] = dict['payType']
         dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
-        dict['settleStatus'] = 0  # TODO
+        dict['settleStatus'] = 1  # TODO
         response.append(dict)
         num += 1
     db.close()
@@ -556,6 +562,56 @@ def settle_list():
 @app.route('/finishList.html')
 def templates_finishList():
     return render_template('finishList.html')
+
+@app.route('/settleRecord/finishList', methods=['POST'])
+def finishList():
+    # TODO:暂不做分页处理
+
+    # 获取当前用户
+    username = session.get('username', None)
+
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+
+    sql = "select order_num from trading where dev_username = '" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+
+    tmp = []
+    for row in result:
+        tmp.append(int(row[0]))
+    num_set = tuple(tmp)
+    sql = "select * from orders where order_num in " + str(num_set)
+    sql = sql[0:-2]
+    sql = sql + ")"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+
+    if not results:
+        return jsonify(total=0, data=[])
+
+    response = []
+    num = 0
+    for row in results:
+        if row[11] == "辅导中" or row[11] == "未完成":
+            continue
+        dict = {}
+        dict['orderId'] = row[0]
+        dict['payType'] = row[16]
+        if dict['payType'] == 1:
+            dict['aliAccount'] = row[17]
+        else:
+            dict['backAccount'] = row[18]
+        # dict['payAccount'] = dict['payType']
+        dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
+        dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
+        dict['settleStatus'] = 1  # TODO
+        # dict['finishTime'] = str(row[19])  # 对时间戳做一个处理
+        dict['finishTime'] = "2019-09-15 20:00:00"
+        response.append(dict)
+        num += 1
+    db.close()
+    return jsonify(total=num, data=response)
 
 @app.route('/myInvite.html')
 def templates_myInvite():
