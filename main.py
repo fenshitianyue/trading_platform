@@ -9,7 +9,7 @@ from flask import Response
 from flask import session
 from flask import redirect, url_for  # url重定向
 from flask import send_from_directory  # 文件下载
-from werkzeug import secure_filename # TODO:获取上传文件名
+# from werkzeug import secure_filename # TODO:获取上传文件名
 from datetime import timedelta
 from datetime import datetime
 import json
@@ -544,7 +544,7 @@ def settle_list():
             dict['aliAccount'] = row[17]
         else:
             dict['backAccount'] = row[18]
-        dict['payAccount'] = dict['payType']
+        # dict['payAccount'] = dict['payType']
         dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
         dict['settleStatus'] = 0  # TODO
@@ -638,17 +638,17 @@ def notice_read(id):
 
 # TODO:文件上传
 # 验证上传的文件名是否符合要求，文件名必须带点并且符合允许上传的文件类型要求
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
-@app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
-    if request.methods == 'POST':
-        f = request.files['file']
-        if f and allowed_file(f.filename):
-            filename = secure_filename(f.filename)
-            f.save(os.path.join(app.config['UPLOAD_FOLDER']), filename)
-    return jsonify(code=1)
+# def allowed_file(filename):
+#     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+#
+# @app.route('/upload', methods=['GET', 'POST'])
+# def upload_file():
+#     if request.methods == 'POST':
+#         f = request.files['file']
+#         if f and allowed_file(f.filename):
+#             filename = secure_filename(f.filename)
+#             f.save(os.path.join(app.config['UPLOAD_FOLDER']), filename)
+#     return jsonify(code=1)
 
 
 #######################################
