@@ -649,6 +649,14 @@ def upload_file():
             f.save(os.path.join(app.config['UPLOAD_FOLDER']), filename)
     return jsonify(code=1)
 
+
+#######################################
+# 定制错误页面
+@app.errorhandler(401)
+def page_not_found(error):
+    return render_template('401.html'), 404
+#######################################
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
 
