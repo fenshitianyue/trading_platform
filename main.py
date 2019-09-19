@@ -9,6 +9,7 @@ from flask import Response
 from flask import session
 from flask import redirect, url_for  # url重定向
 from flask import send_from_directory  # 文件下载
+from werkzeug import secure_filename # TODO:文件上传
 from datetime import timedelta
 from datetime import datetime
 import json
@@ -629,6 +630,12 @@ def notice_read(id):
     db.close()
     return jsonify(code=0)
 
+# TODO:文件上传
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.methods == 'POST':
+        f = request.files['the_file']
+        f.save('./document/doc/' + secure_filename(f.filename))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
