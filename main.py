@@ -26,6 +26,7 @@ sys.setdefaultencoding('utf8')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '654321'  # 使用session前设置密匙
+# app.config['SECRET_KEY'] = str(os.urandom(16))
 app.config['PREMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # 设置session的过期时间
 
 # 文件上传相关设置
