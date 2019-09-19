@@ -9,7 +9,7 @@ from flask import Response
 from flask import session
 from flask import redirect, url_for  # url重定向
 from flask import send_from_directory  # 文件下载
-from werkzeug import secure_filename # TODO:文件上传
+from werkzeug import secure_filename # TODO:获取上传文件名
 from datetime import timedelta
 from datetime import datetime
 import json
@@ -27,6 +27,11 @@ sys.setdefaultencoding('utf8')
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '654321'  # 使用session前设置密匙
 app.config['PREMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # 设置session的过期时间
+
+# 文件上传相关设置
+UPLOAD_FOLDER = './document/doc/'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'doc', 'docx'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # 网站主页面
 @app.route('/main')
@@ -631,11 +636,18 @@ def notice_read(id):
     return jsonify(code=0)
 
 # TODO:文件上传
+# 验证上传的文件名是否符合要求，文件名必须带点并且符合允许上传的文件类型要求
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.methods == 'POST':
-        f = request.files['the_file']
-        f.save('./document/doc/' + secure_filename(f.filename))
+        f = request.files['file']
+        if f and allowed_file(f.filename):
+            filename = secure_filename(f.filename)
+            f.save(os.path.join(app.config['UPLOAD_FOLDER']), filename)
+    return jsonify(code=1)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
