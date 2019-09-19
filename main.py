@@ -11,7 +11,7 @@ from flask import redirect, url_for  # url重定向
 from flask import send_from_directory  # 文件下载
 # from werkzeug import secure_filename # TODO:获取上传文件名
 from datetime import timedelta
-from datetime import datetime
+# from datetime import datetime
 import json
 import MySQLdb
 import os
@@ -474,13 +474,12 @@ def finishOrders():
         '''
         结算状态：
             0.申请等待售后
-            1.未结算
+            1.未结算 == 结算中
             2.结算完成
-            3.结算中
         '''
         if row[15] == 0:
             dict['isBillable'] = 0
-        else:
+        elif row[15] == 1:
             dict['isBillable'] = 1
         response.append(dict)
         num += 1
@@ -493,14 +492,7 @@ def settle_record(id):
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
 
-    sql = "update orders set order_appli = 1, order_settlement = 0 where order_num = " + str(id)
-    cursor.execute(sql)
-    db.commit()  # TODO:这里对commit应该做一个异常处理
-
-    # 获取当前系统时间作为"申请时间"提交到数据库
-    now_time = str(datetime.now())
-    now_time = now_time[0:-7]
-    sql = "update orders set order_appli_time = '" + now_time + "'" + " where order_num = " + str(id)
+    sql = "update orders set order_appli = 1, order_settlement = 0, order_appli_time = now() where order_num = " + str(id)
     cursor.execute(sql)
     db.commit()  # TODO:这里对commit应该做一个异常处理
 
@@ -553,7 +545,7 @@ def settle_list():
             dict['backAccount'] = row[18]
         dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
-        dict['settleStatus'] = 1  # TODO
+        dict['settleStatus'] = row[15]
         response.append(dict)
         num += 1
     db.close()
@@ -593,7 +585,7 @@ def finishList():
     response = []
     num = 0
     for row in results:
-        if row[11] == "辅导中" or row[11] == "未完成":
+        if row[11] == "辅导中" or row[11] == "未完成" or row[15] != 2:
             continue
         dict = {}
         dict['orderId'] = row[0]
@@ -602,12 +594,11 @@ def finishList():
             dict['aliAccount'] = row[17]
         else:
             dict['backAccount'] = row[18]
-        # dict['payAccount'] = dict['payType']
         dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
-        dict['settleStatus'] = 1  # TODO
-        # dict['finishTime'] = str(row[19])  # 对时间戳做一个处理
-        dict['finishTime'] = "2019-09-15 20:00:00"
+        dict['settleStatus'] = row[15]
+        dict['finishTime'] = str(row[19])  # 对时间戳做一个处理
+        # dict['finishTime'] = "2019-09-15 20:00:00"
         response.append(dict)
         num += 1
     db.close()
@@ -664,14 +655,6 @@ def notice_list():
         tmp['status'] = row[4]
         response.append(tmp)
     db.close()
-    # response = []
-    # tmp = {}
-    # tmp['id'] = 1
-    # tmp['title'] = "测试标题"
-    # tmp['content'] = "测试通知"
-    # tmp['createTime'] = "2019-09-02 16:07:00"
-    # tmp['status'] = 0
-    # response.append(tmp)
     return jsonify(total=num, data=response)
 
 # 消息已阅
