@@ -25,8 +25,8 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '654321'  # 使用session前设置密匙
-# app.config['SECRET_KEY'] = str(os.urandom(16))
+# app.config['SECRET_KEY'] = '654321'  # 使用session前设置密匙
+app.config['SECRET_KEY'] = str(os.urandom(16))
 app.config['PREMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # 设置session的过期时间
 
 # 文件上传相关设置
@@ -56,6 +56,10 @@ def main():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     return render_template('login.html')
+
+@app.route('/')
+def _login():
+    return redirect(url_for('login'))
 
 @app.route('/user/login', methods=['POST'])
 def user_login():
@@ -173,6 +177,7 @@ def user_register():
     # sql_i = sql_i + ")"
     # # 执行插入操作
     # cursor.execute(sql_i)
+    # db.commit()
     # result = cursor.fetchall()
     if True:
         return jsonify(code=0, msg="register OK")  # 如果注册成功，code=0
