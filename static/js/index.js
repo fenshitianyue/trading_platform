@@ -87,9 +87,10 @@ $(function () {
             return false;
         }
         var company = $("#company").val().trim();
+
         var QQId = $("#QQId").val().trim();
         if (QQId == '') {
-            layer.msg('请输入微信号', {icon: 5});
+            layer.msg('请输入QQ号', {icon: 5});
             return false;
         }
         var research = $("#research").val().trim();
