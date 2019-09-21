@@ -177,23 +177,27 @@ def user_register():
         else:
             return jsonify(code=1, msg="检查所填写的邀请码是否正确！")
 
-    sql_i = "insert into dev() values(" + "dev_username,dev_passwd,dev_workstatus,dev_realname,dev_school,"
+    sql_i = "insert into dev(" + "dev_username,dev_passwd,dev_workstatus,dev_realname,dev_school,"
     sql_i += "dev_company,dev_chatid,dev_research,dev_education,dev_phone,dev_nation,dev_invitecode,"
     sql_i += "dev_register_time,dev_account_status)"
     sql_i += "values("
-    sql_i += "'" + username + "'"
-    sql_i += "'" + password + "'"
-    sql_i += str(workStatus)
-    sql_i += "'" + realName + "'"
-    sql_i += "'" + school + "'"
-    # sql_i += "'" + company + "'"
-    sql_i += "'" + QQId + "'"
-    sql_i += "'" + research + "'"
-    sql_i += "'" + education + "'"
-    sql_i += "'" + phone + "'"
-    sql_i += "0"
-    sql_i += "'" + newInviteCode + "'"
-    sql_i += "now()"
+    sql_i += "'" + username + "',"
+    sql_i += "'" + password + "',"
+    sql_i += str(workStatus) + ","
+    sql_i += "'" + str(realName) + "',"
+
+    sql_i += "'" + str(school) + "',"
+    if company:
+        sql_i += "'" + str(company) + "',"
+    else:
+        sql_i += "'',"
+    sql_i += "'" + QQId + "',"
+    sql_i += "'" + str(research) + "',"
+    sql_i += "'" + str(education) + "',"
+    sql_i += "'" + phone + "',"
+    sql_i += "0,"
+    sql_i += "'" + newInviteCode + "',"
+    sql_i += "now(),"
     sql_i += "1"
     sql_i += ")"
     # 执行插入操作
