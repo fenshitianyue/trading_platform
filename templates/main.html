@@ -135,7 +135,7 @@
                         <div class="col-sm-6 border-right">
                             <div class="description-block">
                                 <h5 class="description-header">等级</h5>
-                                <span class="description-text">Lv1</span>
+                                <span class="description-text">{{level}}</span>
                             </div>
                             <!-- /.description-block -->
                         </div>
@@ -143,7 +143,7 @@
                         <div class="col-sm-6 border-right">
                             <div class="description-block">
                                 <h5 class="description-header">称号</h5>
-                                <span class="description-text">一级导师</span>
+                                <span class="description-text">{{title}}</span>
                             </div>
                             <!-- /.description-block -->
                         </div>
@@ -156,7 +156,7 @@
                         <div class="col-sm-12" style="margin-top: 2rem">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    <span class="badge">0</span>
+                                  <span class="badge">{{order_num}}</span>
                                     总接单数
                                 </li>
                                 <li class="list-group-item">
@@ -172,7 +172,7 @@
                         </div>
                         <div class="col-sm-12 text-center">
                             <a class="J_menuItem btn btn-primary" href="/assignList.html"><span>立即接单</span></a>
-                            <button class="btn btn-warning copy" url="192.168.204.129:5000/register?inviteCode={{code}}"><span>邀请链接</span></button>
+                            <button class="btn btn-warning copy" url="192.168.204.129:5000/register"><span>邀请链接</span></button>
                         </div>
                     </div>
                     <!-- /.row -->
