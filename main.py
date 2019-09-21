@@ -145,44 +145,51 @@ def user_register():
     # 从前端获取数据
     data = request.get_json()
     data = json.loads(request.get_data())
-    username = data['username'] # 用户名 (string)
-    password = data['password'] # 用户密码 (string)
-    workStatus = data['workStatus'] # 工作状态 (int)
-    realName = data['realName'] # 真实姓名 (string) 编码是unocode,查看需要decode
-    school = data['school'] # 学校名 (string) 编码是unocode,查看需要decode
-    company = data['company'] # 公司名 (string) 编码是unocode,查看需要decode
-    QQId = data['QQId'] # 通讯软件账号 (string)
-    research = data['research'] # 研究方向 (string) 编码是unocode,查看需要decode
-    education = data['education'] # 教育水平 (string) 编码是unocode,查看需要decode
-    phone = data['phone'] # 手机号 (string)
-    inviteCode = data['inviteCode'] # 邀请码 (string)
+    username = data['username']  # 用户名 (string)
+    password = data['password']  # 用户密码 (string)
+    workStatus = data['workStatus']  # 工作状态 (int)
+    realName = data['realName']  # 真实姓名 (string) 编码是unocode,查看需要decode
+    school = data['school']  # 学校名 (string) 编码是unocode,查看需要decode
+    company = data['company']  # 公司名 (string) 编码是unocode,查看需要decode
+    QQId = data['QQId']  # 通讯软件账号 (string)
+    research = data['research']  # 研究方向 (string) 编码是unocode,查看需要decode
+    education = data['education']  # 教育水平 (string) 编码是unocode,查看需要decode
+    phone = data['phone']  # 手机号 (string)
+    inviteCode = data['inviteCode']  # 邀请码 (string)
     print data['inviteCode']
     # nation = data['nation'] # 手机号所属区域 (int) TODO:暂不考虑，统一插入0
-    # 新用户的邀请码
+
+    # 生成新用户的邀请码
     newInviteCode = generate_invite_code()
-    # # 连接MySQL数据库并获取到数据库句柄
-    # db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
-    # cursor = db.cursor()
-    # # 检测是否填写邀请码
-    # if inviteCode:
-    #     # TODO:在数据库中查询邀请码是否正确
-    #     sql_s = ""
-    #     try:
-    #         cursor.execute(sql_s)
-    #     except:
-    #         return jsonify(code=1, msg="检查所填写的邀请码是否正确！")
 
-    # sql_i = "insert into dev() values("
+    # 连接MySQL数据库并获取到数据库句柄
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
+    # 检测是否填写邀请码
+    if inviteCode:
+        # 在数据库中查询邀请码是否正确
+        sql_s = "select dev_id from dev where dev_invitecode = " + "'" + inviteCode + "'"
+        cursor.execute(sql_s)
+        result = cursor.fetchall()
+        if result:
+            # TODO:更新开发者表中邀请码所属用户的相关字段信息
+            pass
+        else:
+            return jsonify(code=1, msg="检查所填写的邀请码是否正确！")
 
-    # sql_i = sql_i + ")"
-    # # 执行插入操作
-    # cursor.execute(sql_i)
-    # db.commit()
-    # result = cursor.fetchall()
-    if True:
+    sql_i = "insert into dev() values("
+
+    sql_i = sql_i + ")"
+    # 执行插入操作
+    try:
+        cursor.execute(sql_i)
+        db.commit()
+        db.close()
         return jsonify(code=0, msg="register OK")  # 如果注册成功，code=0
-    else:
-        return jsonify(code=1, msg="register Error")  # TODO：暂时不考虑注册失败的原因，后期再考虑细化失败原因
+    except RuntimeError:
+        db.rollback()
+        db.close()
+        return jsonify(code=1, msg="register Error")
 
 # 修改密码
 @app.route('/resetPwd', methods=['POST'])
