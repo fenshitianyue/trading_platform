@@ -25,8 +25,8 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 app = Flask(__name__)
-# app.config['SECRET_KEY'] = '654321'  # 使用session前设置密匙
-app.config['SECRET_KEY'] = str(os.urandom(16))
+app.config['SECRET_KEY'] = '654321'  # 使用session前设置密匙
+# app.config['SECRET_KEY'] = str(os.urandom(16))
 app.config['PREMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # 设置session的过期时间
 
 # 文件上传相关设置
@@ -156,7 +156,6 @@ def user_register():
     education = data['education']  # 教育水平 (string) 编码是unocode,查看需要decode
     phone = data['phone']  # 手机号 (string)
     inviteCode = data['inviteCode']  # 邀请码 (string)
-    print data['inviteCode']
     # nation = data['nation'] # 手机号所属区域 (int) TODO:暂不考虑，统一插入0
 
     # 生成新用户的邀请码
@@ -171,10 +170,12 @@ def user_register():
         # 在数据库中查询邀请码是否正确
         sql_s = "select dev_id from dev where dev_invitecode = " + "'" + inviteCode + "'"
         cursor.execute(sql_s)
-        dev_id = cursor.fetchall()
+        result = cursor.fetchone()
+        dev_id = result[0]
         if dev_id:
             # 在邀请表中插入一条关联数据
-            sql = "insert into invite values(" + str(dev_id) + "," + realName + "," + "now()" + ")"
+            sql = "insert into invite values(" + str(dev_id) + "," + "'" + str(realName) + "'," + "now()" + ")"
+            print sql
             try:
                 cursor.execute(sql)
                 db.commit()
