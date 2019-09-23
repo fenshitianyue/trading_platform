@@ -266,6 +266,7 @@ def logout():
     return redirect(url_for('login'))
 
 # 其他页面
+# TODO
 @app.route('/main.html')
 def templates_main():
     # 从session获取用户名
@@ -281,7 +282,7 @@ def templates_main():
     invite_code = result[1]
 
     db.close()
-    return render_template('main.html', toolName=toolname, code=invite_code)
+    return render_template('main.html', toolName=toolname, code=invite_code, level='Lv1', title='一级导师', order_num=0)
 
 # 文件下载
 # TODO:如果文件名是中文的，这里可能会有问题
