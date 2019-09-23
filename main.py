@@ -66,7 +66,7 @@ def user_login():
     username = request.values.get('username')
     password = request.values.get('password')
     code = request.values.get('code')
-    # 从 session 获取正确验证码
+    # 从 session 获取正确验证码 TODO:这里在配置多用户的时候可能会有问题
     correct_code = session.get('code', None)
     # 从数据库中查找是否存在用户名和密码
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
