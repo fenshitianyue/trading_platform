@@ -454,24 +454,29 @@ def myOrders():
     '''
     # TODO:先不做分页处理
     path_pre = "/download/"
+
     username = session.get('username', None)
+
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
-    # 更新订单对应表
+
+    # 从交易记录表中查出当前用户的订单号
     sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
     result = cursor.fetchall()
+    if not result:
+        return jsonify(total=0, data=[])
     tmp = []
     for row in result:
         tmp.append(int(row[0]))
     num_set = tuple(tmp)
+    # 从订单表中查出订单的详细信息
     sql = "select * from orders where order_num in " + str(num_set)
     sql = sql[0:-2]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
-    if not results:
-        return jsonify(total=0, data=[])
+
     num = 0
     response = []
     for row in results:
@@ -517,25 +522,33 @@ def finishOrders():
     # data = json.loads(request.get_data())
     # pageNumber = data['pageNumber']
     # pageSize = data['pageSize']
+
     # 获取当前用户
     username = session.get('username', None)
+
     # 连接数据库
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
+
+    # 从交易记录表中查出当前用户的订单号
     sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
     result = cursor.fetchall()
+    if not result:
+        return jsonify(total=0, data=[])
+
     tmp = []
     for row in result:
         tmp.append(int(row[0]))
     num_set = tuple(tmp)
+
+    # 从订单表中查出订单的详细信息
     sql = "select * from orders where order_num in " + str(num_set)
     sql = sql[0:-2]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
-    if not results:
-        return jsonify(total=0, data=[])
+
     response = []
     num = 0
     for row in results:
@@ -601,19 +614,19 @@ def settle_list():
     sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
     result = cursor.fetchall()
+    if not result:
+        return jsonify(total=0, data=[])
 
     tmp = []
     for row in result:
         tmp.append(int(row[0]))
     num_set = tuple(tmp)
+
     sql = "select * from orders where order_num in " + str(num_set)
     sql = sql[0:-2]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
-
-    if not results:
-        return jsonify(total=0, data=[])
 
     response = []
     num = 0
@@ -652,19 +665,19 @@ def finishList():
     sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
     result = cursor.fetchall()
+    if not result:
+        return jsonify(total=0, data=[])
 
     tmp = []
     for row in result:
         tmp.append(int(row[0]))
     num_set = tuple(tmp)
+
     sql = "select * from orders where order_num in " + str(num_set)
     sql = sql[0:-2]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
-
-    if not results:
-        return jsonify(total=0, data=[])
 
     response = []
     num = 0
