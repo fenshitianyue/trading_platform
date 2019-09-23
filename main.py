@@ -274,15 +274,48 @@ def templates_main():
     # 从数据库查找用户名对应的真实姓名和邀请码
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
-    sql = "select dev_realname, dev_invitecode from dev where dev_username = '" + username + "'"
+    sql = "select dev_realname, dev_invitecode, dev_exp, dev_order_num from dev where dev_username = '" + username + "'"
     cursor.execute(sql)
     result = cursor.fetchone()
 
     toolname = result[0]
     invite_code = result[1]
+    exp = result[2]
+    num = result[3]
+
+    if exp < 150:
+        l_level = 'Lv1'
+        l_title = '一级导师'
+    elif exp >= 150 and exp < 200:
+        l_level = 'Lv2'
+        l_title = '二级导师'
+    elif exp >= 200 and exp < 350:
+        l_level = 'Lv3'
+        l_title = '三级导师'
+    elif exp >= 350 and exp < 500:
+        l_level = 'Lv4'
+        l_title = '四级导师'
+    elif exp >= 500 and exp < 700:
+        l_level = 'Lv5'
+        l_title = '五级导师'
+    elif exp >= 700 and exp < 900:
+        l_level = 'Lv6'
+        l_title = '六级导师'
+    elif exp >= 900 and exp < 1200:
+        l_level = 'Lv7'
+        l_title = '七级导师'
+    elif exp >= 1200 and exp < 1600:
+        l_level = 'Lv8'
+        l_title = '八级导师'
+    elif exp >= 1600 and exp < 2100:
+        l_level = 'Lv9'
+        l_title = '九级导师'
+    else:
+        l_level = 'Lv10'
+        l_title = '十级导师'
 
     db.close()
-    return render_template('main.html', toolName=toolname, code=invite_code, level='Lv1', title='一级导师', order_num=0)
+    return render_template('main.html', toolName=toolname, code=invite_code, level=l_level, title=l_title, order_num=num)
 
 # 文件下载
 # TODO:如果文件名是中文的，这里可能会有问题
@@ -372,6 +405,13 @@ def pickOrder():
 
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
+    sql = "select dev_exp from dev where dev_username = " + "'" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    exp = result[0]
+    if exp < 50:
+        db.close()
+        return jsonify(code=1, msg="经验值小于50，暂时不能接单！")
     # 更新订单对应表
     sql = "insert into trading(order_num, dev_username) values(" + str(order_num) + ",'" + username + "')"
     cursor.execute(sql)
