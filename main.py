@@ -681,19 +681,42 @@ def finishList():
 def templates_myInvite():
     return render_template('myInvite.html')
 
-# TODO
 @app.route('/myInvite', methods=['POST'])
 def myInvite():
-    pass
+    # 获取当前用户
+    username = session.get('username', None)
 
-@app.route('/myReward.html')
-def templates_myreword():
-    return render_template('myReward.html')
+    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    cursor = db.cursor()
 
-# TODO
-@app.route('/myReward', methods=['POST'])
-def myReward():
-    pass
+    sql = "select dev_id from dev where dev_username = " + "'" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    dev_id = result[0]
+
+    sql = "select name, register_time from invite where id = " + str(dev_id)
+    cursor.execute(sql)
+    results = cursor.fetchall()
+
+    response = []
+    num = 0
+    for row in results:
+        dict = {}
+        dict['realName'] = row[0]
+        dict['createTime'] = row[1]
+        response.append(dict)
+        num += 1
+    db.close()
+    return jsonify(total=num, data=response)
+
+# @app.route('/myReward.html')
+# def templates_myreword():
+#     return render_template('myReward.html')
+#
+# # TODO
+# @app.route('/myReward', methods=['POST'])
+# def myReward():
+#     pass
 
 # 消息通知
 @app.route('/list.html')
