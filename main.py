@@ -165,6 +165,7 @@ def user_register():
     # 连接MySQL数据库并获取到数据库句柄
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
+
     # 检测是否填写邀请码
     if inviteCode:
         # 在数据库中查询邀请码是否正确
@@ -172,13 +173,17 @@ def user_register():
         cursor.execute(sql_s)
         dev_id = cursor.fetchall()
         if dev_id:
-            # 更新开发者表中邀请码所属用户的相关字段信息
+            # 在邀请表中插入一条关联数据
             sql = "insert into invite values(" + str(dev_id) + "," + realName + "," + "now()" + ")"
             try:
                 cursor.execute(sql)
                 db.commit()
             except RuntimeError:
                 return jsonify(code=1, msg="邀请码异常！")
+            # 更新开发者表中邀请码所属用户的相关字段信息
+            sql = "update dev set dev_exp = dev_exp + 5 where dev_id = " + str(dev_id)
+            cursor.execute(sql)
+            db.commit()
         else:
             return jsonify(code=1, msg="检查所填写的邀请码是否正确！")
 
