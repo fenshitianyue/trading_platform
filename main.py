@@ -170,10 +170,15 @@ def user_register():
         # 在数据库中查询邀请码是否正确
         sql_s = "select dev_id from dev where dev_invitecode = " + "'" + inviteCode + "'"
         cursor.execute(sql_s)
-        result = cursor.fetchall()
-        if result:
-            # TODO:更新开发者表中邀请码所属用户的相关字段信息
-            pass
+        dev_id = cursor.fetchall()
+        if dev_id:
+            # 更新开发者表中邀请码所属用户的相关字段信息
+            sql = "insert into invite values(" + str(dev_id) + "," + realName + "," + "now()" + ")"
+            try:
+                cursor.execute(sql)
+                db.commit()
+            except RuntimeError:
+                return jsonify(code=1, msg="邀请码异常！")
         else:
             return jsonify(code=1, msg="检查所填写的邀请码是否正确！")
 
