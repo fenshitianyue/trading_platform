@@ -11,6 +11,7 @@ from flask import redirect, url_for  # url重定向
 from flask import send_from_directory  # 文件下载
 # from werkzeug import secure_filename # TODO:获取上传文件名
 from datetime import timedelta
+from flask import make_response
 # from datetime import datetime
 import json
 import MySQLdb
@@ -83,12 +84,18 @@ def user_login():
         if dev_passwd != password:
             return jsonify(code=1, msg='密码错误！')
 
-    # 如果可以用户可以正常登陆，将用户名写入session
-    session['username'] = username
-    # 比对用户填写的用户码和正确验证码是否一致
+    # 比对用户填写的验证码和正确验证码是否一致
     if code.lower() != correct_code.lower():
         return jsonify(code=1, msg='验证码错误！')
+
+    session['username'] = username
+
+    # tmp = jsonify(code=0)
+    # response = make_response(tmp)
+    # response.set_cookie('username', username)
+
     db.close()
+    # return response
     return jsonify(code=0)
 
 # 登陆时获取验证码
@@ -282,6 +289,8 @@ def logout():
 def templates_main():
     # 从session获取用户名
     username = session.get('username', None)
+    # username = request.cookies.get('username')
+
     # 从数据库查找用户名对应的真实姓名和邀请码
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
@@ -412,6 +421,7 @@ def pickOrder():
     order_num = request.values.get('id')
     # print "id:" + order_num
     username = session.get('username', None)
+    # username = request.cookies.get('username')
     # print "username:" + username
 
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
@@ -456,6 +466,7 @@ def myOrders():
     path_pre = "/download/"
 
     username = session.get('username', None)
+    # username = request.cookies.get('username')
 
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
@@ -525,6 +536,7 @@ def finishOrders():
 
     # 获取当前用户
     username = session.get('username', None)
+    # username = request.cookies.get('username')
 
     # 连接数据库
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
@@ -607,6 +619,7 @@ def settle_list():
 
     # 获取当前用户
     username = session.get('username', None)
+    # username = request.cookies.get('username')
 
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
@@ -658,6 +671,7 @@ def finishList():
 
     # 获取当前用户
     username = session.get('username', None)
+    # username = request.cookies.get('username')
 
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
@@ -709,6 +723,7 @@ def templates_myInvite():
 def myInvite():
     # 获取当前用户
     username = session.get('username', None)
+    # username = request.cookies.get('username')
 
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
@@ -727,7 +742,7 @@ def myInvite():
     for row in results:
         dict = {}
         dict['realName'] = row[0]
-        dict['createTime'] = row[1]
+        dict['createTime'] = str(row[1])
         response.append(dict)
         num += 1
     db.close()
