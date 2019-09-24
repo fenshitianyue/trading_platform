@@ -10,14 +10,7 @@ var cols = [
         field: 'createTime', align: 'center',
         title: '注册时间', sortable: true
     },
-    {
-        field: 'type', align: 'center',
-        title: '邀请级别', sortable: true
-        ,
-        formatter: function (value, row, index) {
-            return value + '级';
-        }
-    },
+  
 ];
 
 $(function () {
@@ -30,7 +23,6 @@ function load() {
         .bootstrapTable(
             {
                 method: 'post', // 服务器数据的请求方式 get or post
-                //url: prefix + "/myInvite", // 服务器数据的加载地址
                 url: "/myInvite", // 服务器数据的加载地址
                 showRefresh: true,
                 showToggle: true,
