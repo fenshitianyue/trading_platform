@@ -6,7 +6,7 @@
 	<title></title>
 	<meta name="keywords" content="">
 	<meta name="description" content="">
-	<link rel="shortcut icon" href="https://www.tutorzzz.com/favicon.ico">
+	<link rel="shortcut icon" href="static/images/favicon.ico">
 	<link href="static/css/bootstrap.min.css" rel="stylesheet">
 	<link href="static/css/font-awesome.css" rel="stylesheet">
 	<link href="static/css/bootstrap-table.min.css" rel="stylesheet">
@@ -150,6 +150,7 @@
                         <div class="col-sm-12">
                             <div class="layui-progress layui-progress-big" lay-showpercent="yes">
                                 <div class="layui-progress-bar" lay-percent="100/150" style="width: 66.6667%;"><span class="layui-progress-text">100/150</span></div>
+                                <!--<div class="layui-progress-bar layui-bg-blue" lay-percent="20%"></div>-->
                             </div>
                         </div>
                         <!-- /.col -->
@@ -174,6 +175,7 @@
                             <a class="J_menuItem btn btn-primary" href="/assignList.html"><span>立即接单</span></a>
                             <button class="btn btn-warning copy" url="192.168.204.129:5000/register"><span>邀请链接</span></button>
                         </div>
+
                     </div>
                     <!-- /.row -->
                 </div>
@@ -233,88 +235,88 @@
                                 <th>等级</th>
                                 <th>所需积分</th>
                                 <th>退单扣分</th>
-                                <th>每单额外固定金额</th>
-                                <th>每单额外提成</th>
+                                <th>平台服务费</th>
+                              
                             </tr>
                             <tr>
                                 <td>一级导师</td>
                                 <td>1</td>
                                 <td>0</td>
                                 <td>20</td>
-                                <td>0</td>
-                                <td>0%</td>
+                                <td>30%</td>
+                              
                             </tr>
                             <tr>
                                 <td>二级导师</td>
                                 <td>2</td>
                                 <td>150</td>
                                 <td>20</td>
-                                <td>0</td>
-                                <td>0%</td>
+                                <td>25%</td>
+                           
                             </tr>
                             <tr>
                                 <td>三级导师</td>
                                 <td>3</td>
                                 <td>200</td>
                                 <td>20</td>
-                                <td>10</td>
-                                <td>1%</td>
+                                <td>20%</td>
+                              
                             </tr>
                             <tr>
                                 <td>四级导师</td>
                                 <td>4</td>
                                 <td>350</td>
                                 <td>50</td>
-                                <td>10</td>
-                                <td>2%</td>
+                                <td>19%</td>
+                               
                             </tr>
                             <tr>
                                 <td>五级导师</td>
                                 <td>5</td>
                                 <td>500</td>
                                 <td>50</td>
-                                <td>10</td>
-                                <td>3%</td>
+                                <td>17%</td>
+                              
                             </tr>
                             <tr>
                                 <td>六级导师</td>
                                 <td>6</td>
                                 <td>700</td>
                                 <td>100</td>
-                                <td>20</td>
-                                <td>5%</td>
+                                <td>15%</td>
+                           
                             </tr>
                             <tr>
                                 <td>七级导师</td>
                                 <td>7</td>
                                 <td>900</td>
                                 <td>100</td>
-                                <td>20</td>
-                                <td>6%</td>
+                                <td>13%</td>
+                              
                             </tr>
                             <tr>
                                 <td>八级导师</td>
                                 <td>8</td>
                                 <td>1200</td>
                                 <td>100</td>
-                                <td>20</td>
-                                <td>7%</td>
+                                <td>11%</td>
+                           
                             </tr>
                             <tr>
                                 <td>九级导师</td>
                                 <td>9</td>
                                 <td>1600</td>
                                 <td>100</td>
-                                <td>30</td>
-                                <td>8%</td>
+                                <td>5%</td>
+                             
                             </tr>
                             <tr>
                                 <td>十级导师</td>
                                 <td>10</td>
                                 <td>2100</td>
                                 <td>100</td>
-                                <td>50</td>
-                                <td>10%</td>
+                                <td>0%</td>
+                           
                             </tr>
                         </tbody></table>
                     </div>
@@ -356,6 +358,7 @@
     //注意进度条依赖 element 模块，否则无法进行正常渲染和功能性操作
     layui.use('element', function () {
         var element = layui.element;
+        element.init();
     });
 </script>
 
