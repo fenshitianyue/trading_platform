@@ -477,12 +477,18 @@ def myOrders():
     if not result:
         return jsonify(total=0, data=[])
     tmp = []
+    tmp_num = 0
     for row in result:
         tmp.append(int(row[0]))
+        tmp_num += 1
+
     num_set = tuple(tmp)
     # 从订单表中查出订单的详细信息
     sql = "select * from orders where order_num in " + str(num_set)
-    sql = sql[0:-2]
+    if tmp_num == 1:
+        sql = sql[0:-2]
+    else:
+        sql = sql[0:-1]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
@@ -549,13 +555,18 @@ def finishOrders():
         return jsonify(total=0, data=[])
 
     tmp = []
+    tmp_num = 0
     for row in result:
         tmp.append(int(row[0]))
+        tmp_num += 1
     num_set = tuple(tmp)
 
     # 从订单表中查出订单的详细信息
     sql = "select * from orders where order_num in " + str(num_set)
-    sql = sql[0:-2]
+    if tmp_num == 1:
+        sql = sql[0:-2]
+    else:
+        sql = sql[0:-1]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
@@ -630,12 +641,18 @@ def settle_list():
         return jsonify(total=0, data=[])
 
     tmp = []
+    tmp_num = 0
+
     for row in result:
         tmp.append(int(row[0]))
+        tmp_num += 1
     num_set = tuple(tmp)
 
     sql = "select * from orders where order_num in " + str(num_set)
-    sql = sql[0:-2]
+    if tmp_num == 1:
+        sql = sql[0:-2]
+    else:
+        sql = sql[0:-1]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
@@ -682,12 +699,17 @@ def finishList():
         return jsonify(total=0, data=[])
 
     tmp = []
+    tmp_num = 0
     for row in result:
         tmp.append(int(row[0]))
+        tmp_num += 1
     num_set = tuple(tmp)
 
     sql = "select * from orders where order_num in " + str(num_set)
-    sql = sql[0:-2]
+    if tmp_num == 1:
+        sql = sql[0:-2]
+    else:
+        sql = sql[0:-1]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
