@@ -598,7 +598,7 @@ def finishOrders():
         '''
         if row[15] == 0:
             dict['isBillable'] = 0
-        elif row[15] == 1:
+        elif not row[15] or row[15] == 1:
             dict['isBillable'] = 1
         response.append(dict)
         num += 1
@@ -669,9 +669,10 @@ def settle_list():
             dict['aliAccount'] = row[17]
         else:
             dict['backAccount'] = row[18]
-        dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
+        # TODO:这里后续根据用户等级来生成计算公式
+        dict['totalFee'] = (int(row[6]) * 8) / 10  # 计算金额计算公式
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
-        dict['settleStatus'] = row[15]
+        dict['settleStatus'] = 1
         response.append(dict)
         num += 1
     db.close()
