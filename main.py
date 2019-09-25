@@ -11,7 +11,6 @@ from flask import redirect, url_for  # url重定向
 from flask import send_from_directory  # 文件下载
 # from werkzeug import secure_filename # TODO:获取上传文件名
 from datetime import timedelta
-# from datetime import datetime
 import json
 import MySQLdb
 import os
@@ -26,7 +25,6 @@ sys.setdefaultencoding('utf8')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '654321'  # 使用session前设置密匙
-# app.config['SECRET_KEY'] = str(os.urandom(16))
 app.config['PREMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # 设置session的过期时间
 
 # 文件上传相关设置
@@ -68,17 +66,21 @@ def _login():
 
 @app.route('/user/login', methods=['POST'])
 def user_login():
+    # 从前端获取字段
     username = request.values.get('username')
     password = request.values.get('password')
     code = request.values.get('code')
+
     # 从 session 获取正确验证码 TODO:这里在配置多用户的时候可能会有问题
     correct_code = session.get('code', None)
     # 从数据库中查找是否存在用户名和密码
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
+
     sql = "select dev_username, dev_passwd from dev where dev_username = '" + username + "'"
     cursor.execute(sql)
     result = cursor.fetchone()
+
     # 用户名是否存在?
     if not result:
         return jsonify(code=1, msg='用户名不存在！')
@@ -93,7 +95,6 @@ def user_login():
         return jsonify(code=1, msg='验证码错误！')
 
     session['username'] = username
-
     db.close()
     return jsonify(code=0)
 
@@ -125,6 +126,7 @@ def checkUsername():
     '''
     # 从前端ajax拿到username
     username = request.values.get('username')
+
     # 连接MySQL数据库并获取到数据库句柄
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
@@ -133,8 +135,9 @@ def checkUsername():
     # 执行查询操作
     cursor.execute(sql)
     result = cursor.fetchall()
+
     db.close()
-    if result: # 如果查询结果不为空, valid = False
+    if result:  # 如果查询结果不为空, valid = False
         return jsonify(valid=False)
     else:
         return jsonify(valid=True)
@@ -235,6 +238,7 @@ def resetPwd():
     username = session.get('username', None)
     # 从前端获取密码
     passwd = request.values.get('password')
+
     # 连接数据库
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
@@ -242,11 +246,13 @@ def resetPwd():
     sql = "update dev set dev_passwd = '" + passwd + "'" + " where dev_username = '" + username + "'"
     cursor.execute(sql)
     db.commit()
+
     # 从数据库中查找当前用户的密码
     sql = "select dev_passwd from dev where dev_username = '" + username + "'"
     cursor.execute(sql)
     result = cursor.fetchone()
     dev_passwd = result[0]
+
     # 判断修改后的密码和新密码是否相同?
     db.close()
     if dev_passwd == passwd:
@@ -360,25 +366,31 @@ def assignList():
         3.将查找到的数据拼接成json格式发送给前端
     '''
     path_pre = "/download/"
+
     # 从前端获取分页相关信息
     data = request.get_json()
     data = json.loads(request.get_data())
     pageNumber = data['pageNumber']
     pageSize = data['pageSize']
+
     # 连接数据库
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
+
     # 先查询一下一共有多少条订单信息
     sql = "select count(*) from orders"
     cursor.execute(sql)
     num = cursor.fetchone()
+
     # 然后查询出当前页的订单信息
     sql = "select * from orders limit " + str((pageNumber-1) * pageSize) + "," + str(pageSize)
     cursor.execute(sql)
+
     # 根据查询结果拼接响应数据格式
     results = cursor.fetchall()
     if not results:
         return jsonify(total=0, data=[])
+
     response = []
     for row in results:
         dict = {}
@@ -417,21 +429,23 @@ def pickOrder():
         5.更新当前用户开发中订单表
         6.拼接响应返回给前端
     '''
+    # 从前端获取订单号
     order_num = request.values.get('id')
-    # print "id:" + order_num
+    # 从session获取用户名
     username = session.get('username', None)
-    # username = request.cookies.get('username')
-    # print "username:" + username
 
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
+
     sql = "select dev_exp from dev where dev_username = " + "'" + username + "'"
     cursor.execute(sql)
+
     result = cursor.fetchone()
     exp = result[0]
     if exp < 50:
         db.close()
         return jsonify(code=1, msg="经验值小于50，暂时不能接单！")
+
     # 更新订单对应表
     sql = "insert into trading(order_num, dev_username) values(" + str(order_num) + ",'" + username + "')"
     cursor.execute(sql)
@@ -442,7 +456,6 @@ def pickOrder():
     cursor.execute(sql)
     # TODO:这里可能要用异常判断一下commit是否成功
     db.commit()
-    # TODO:更新当前用户开发中订单表
     db.close()
     # 根据查询结果拼接响应数据格式
     return jsonify(code=0, msg="接单成功！")
@@ -473,9 +486,11 @@ def myOrders():
     # 从交易记录表中查出当前用户的订单号
     sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
+
     result = cursor.fetchall()
     if not result:
         return jsonify(total=0, data=[])
+
     tmp = []
     tmp_num = 0
     for row in result:
@@ -483,6 +498,7 @@ def myOrders():
         tmp_num += 1
 
     num_set = tuple(tmp)
+
     # 从订单表中查出订单的详细信息
     sql = "select * from orders where order_num in " + str(num_set)
     if tmp_num == 1:
@@ -490,6 +506,7 @@ def myOrders():
     else:
         sql = sql[0:-1]
     sql = sql + ")"
+
     cursor.execute(sql)
     results = cursor.fetchall()
 
@@ -541,7 +558,6 @@ def finishOrders():
 
     # 获取当前用户
     username = session.get('username', None)
-    # username = request.cookies.get('username')
 
     # 连接数据库
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
@@ -550,6 +566,7 @@ def finishOrders():
     # 从交易记录表中查出当前用户的订单号
     sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
+
     result = cursor.fetchall()
     if not result:
         return jsonify(total=0, data=[])
@@ -568,6 +585,7 @@ def finishOrders():
     else:
         sql = sql[0:-1]
     sql = sql + ")"
+
     cursor.execute(sql)
     results = cursor.fetchall()
 
@@ -727,11 +745,11 @@ def finishList():
             dict['aliAccount'] = row[17]
         else:
             dict['backAccount'] = row[18]
+        # TODO:这里后续根据用户等级来生成具体的金额计算公式
         dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
         dict['settleStatus'] = row[15]
         dict['finishTime'] = str(row[19])  # 对时间戳做一个处理
-        # dict['finishTime'] = "2019-09-15 20:00:00"
         response.append(dict)
         num += 1
     db.close()
@@ -745,7 +763,6 @@ def templates_myInvite():
 def myInvite():
     # 获取当前用户
     username = session.get('username', None)
-    # username = request.cookies.get('username')
 
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
@@ -770,15 +787,6 @@ def myInvite():
     db.close()
     return jsonify(total=num, data=response)
 
-# @app.route('/myReward.html')
-# def templates_myreword():
-#     return render_template('myReward.html')
-#
-# # TODO
-# @app.route('/myReward', methods=['POST'])
-# def myReward():
-#     pass
-
 # 消息通知
 @app.route('/list.html')
 def templates_list():
@@ -797,6 +805,7 @@ def notice_list():
     data = json.loads(request.get_data())
     pageNumber = data['pageNumber']
     pageSize = data['pageSize']
+
     # 连接数据库
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
@@ -804,21 +813,23 @@ def notice_list():
     sql = "select count(*) from sys_notice"
     cursor.execute(sql)
     num = cursor.fetchone()
+
     # 然后查询出当前页的系统通知信息
     sql = "select * from sys_notice limit " + str((pageNumber-1) * pageSize) + "," + str(pageSize)
     cursor.execute(sql)
+
     # 根据查询结果拼接响应数据格式
     results = cursor.fetchall()
     if not results:
         return jsonify(total=0, data=[])
+
     response = []
     for row in results:
         tmp = {}
         tmp['id'] = row[0]
         tmp['title'] = row[1]
         tmp['content'] = row[2]
-        # 对时间戳做一个处理
-        tmp['createTime'] = str(row[3])
+        tmp['createTime'] = str(row[3])  # 对时间戳做一个处理
         tmp['status'] = row[4]
         response.append(tmp)
     db.close()
