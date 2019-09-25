@@ -11,7 +11,6 @@ from flask import redirect, url_for  # url重定向
 from flask import send_from_directory  # 文件下载
 # from werkzeug import secure_filename # TODO:获取上传文件名
 from datetime import timedelta
-from flask import make_response
 # from datetime import datetime
 import json
 import MySQLdb
@@ -54,9 +53,14 @@ def main():
         return redirect(url_for('login'))
 
 # 登陆主界面
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login')
 def login():
-    return render_template('login.html')
+    # 确保同一台PC同时只能有一个用户登陆
+    username = session.get('username', None)
+    if username:
+        return render_template('index.html', name=username)
+    else:
+        return render_template('login.html')
 
 @app.route('/')
 def _login():
@@ -90,12 +94,7 @@ def user_login():
 
     session['username'] = username
 
-    # tmp = jsonify(code=0)
-    # response = make_response(tmp)
-    # response.set_cookie('username', username)
-
     db.close()
-    # return response
     return jsonify(code=0)
 
 # 登陆时获取验证码
