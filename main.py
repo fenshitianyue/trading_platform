@@ -339,7 +339,7 @@ def templates_main():
         l_title = '十级导师'
 
     db.close()
-    return render_template('main.html', toolName=toolname, code=invite_code, level=l_level, title=l_title, order_num=num)
+    return render_template('main.html', toolName=toolname, code=invite_code, level=l_level, title=l_title, order_num=num, integral=exp)
 
 # 文件下载
 # TODO:如果文件名是中文的，这里可能会有问题
