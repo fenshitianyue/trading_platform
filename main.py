@@ -71,7 +71,7 @@ def user_login():
     password = request.values.get('password')
     code = request.values.get('code')
 
-    # 从 session 获取正确验证码 TODO:这里在配置多用户的时候可能会有问题
+    # 从 session 获取正确验证码
     correct_code = session.get('code', None)
     # 从数据库中查找是否存在用户名和密码
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
@@ -294,7 +294,6 @@ def logout():
 def templates_main():
     # 从session获取用户名
     username = session.get('username', None)
-    # username = request.cookies.get('username')
 
     # 从数据库查找用户名对应的真实姓名和邀请码
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
@@ -478,7 +477,6 @@ def myOrders():
     path_pre = "/download/"
 
     username = session.get('username', None)
-    # username = request.cookies.get('username')
 
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
@@ -647,10 +645,15 @@ def settle_list():
 
     # 获取当前用户
     username = session.get('username', None)
-    # username = request.cookies.get('username')
 
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
+
+    # 查出当前用户的积分
+    sql = "select dev_exp from dev where dev_username = " + "'" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    exp = result[0]
 
     sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
@@ -666,6 +669,7 @@ def settle_list():
         tmp_num += 1
     num_set = tuple(tmp)
 
+    # 查出当前用户所接的所有订单的订单号
     sql = "select * from orders where order_num in " + str(num_set)
     if tmp_num == 1:
         sql = sql[0:-2]
@@ -687,8 +691,27 @@ def settle_list():
             dict['aliAccount'] = row[17]
         else:
             dict['backAccount'] = row[18]
-        # TODO:这里后续根据用户等级来生成计算公式
-        dict['totalFee'] = (int(row[6]) * 8) / 10  # 计算金额计算公式
+        # 这里根据用户等级来生成计算公式
+        if exp < 150:
+            dict['totalFee'] = (int(row[6] * 7) / 10)  # 计算金额公式
+        elif exp >= 150 and exp < 200:
+            dict['totalFee'] = (int(row[6] * 3) / 4)  # 计算金额公式
+        elif exp >= 200 and exp < 350:
+            dict['totalFee'] = (int(row[6] * 4) / 5)  # 计算金额公式
+        elif exp >= 350 and exp < 500:
+            dict['totalFee'] = (int(row[6] * 81) / 100)  # 计算金额公式
+        elif exp >= 500 and exp < 700:
+            dict['totalFee'] = (int(row[6] * 83) / 100)  # 计算金额公式
+        elif exp >= 700 and exp < 900:
+            dict['totalFee'] = (int(row[6] * 17) / 20)  # 计算金额公式
+        elif exp >= 900 and exp < 1200:
+            dict['totalFee'] = (int(row[6] * 87) / 100)  # 计算金额公式
+        elif exp >= 1200 and exp < 1600:
+            dict['totalFee'] = (int(row[6] * 89) / 100)  # 计算金额公式
+        elif exp >= 1600 and exp < 2100:
+            dict['totalFee'] = (int(row[6] * 19) / 20)  # 计算金额公式
+        else:
+            dict['totalFee'] = int(row[6])  # 计算金额公式
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
         dict['settleStatus'] = 1
         response.append(dict)
@@ -706,11 +729,17 @@ def finishList():
 
     # 获取当前用户
     username = session.get('username', None)
-    # username = request.cookies.get('username')
 
     db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
 
+    # 查出当前用户的积分
+    sql = "select dev_exp from dev where dev_username = " + "'" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    exp = result[0]
+
+    # 查出当前用户所接的所有订单的订单号
     sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -745,8 +774,27 @@ def finishList():
             dict['aliAccount'] = row[17]
         else:
             dict['backAccount'] = row[18]
-        # TODO:这里后续根据用户等级来生成具体的金额计算公式
-        dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
+        # 这里根据用户等级来生成计算公式
+        if exp < 150:
+            dict['totalFee'] = (int(row[6] * 7) / 10)  # 计算金额公式
+        elif exp >= 150 and exp < 200:
+            dict['totalFee'] = (int(row[6] * 3) / 4)  # 计算金额公式
+        elif exp >= 200 and exp < 350:
+            dict['totalFee'] = (int(row[6] * 4) / 5)  # 计算金额公式
+        elif exp >= 350 and exp < 500:
+            dict['totalFee'] = (int(row[6] * 81) / 100)  # 计算金额公式
+        elif exp >= 500 and exp < 700:
+            dict['totalFee'] = (int(row[6] * 83) / 100)  # 计算金额公式
+        elif exp >= 700 and exp < 900:
+            dict['totalFee'] = (int(row[6] * 17) / 20)  # 计算金额公式
+        elif exp >= 900 and exp < 1200:
+            dict['totalFee'] = (int(row[6] * 87) / 100)  # 计算金额公式
+        elif exp >= 1200 and exp < 1600:
+            dict['totalFee'] = (int(row[6] * 89) / 100)  # 计算金额公式
+        elif exp >= 1600 and exp < 2100:
+            dict['totalFee'] = (int(row[6] * 19) / 20)  # 计算金额公式
+        else:
+            dict['totalFee'] = int(row[6])  # 计算金额公式
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
         dict['settleStatus'] = row[15]
         dict['finishTime'] = str(row[19])  # 对时间戳做一个处理
