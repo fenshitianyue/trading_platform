@@ -713,7 +713,7 @@ def settle_list():
         else:
             dict['totalFee'] = int(row[6])  # 计算金额公式
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
-        dict['settleStatus'] = 1
+        dict['settleStatus'] = row[15]  # TODO
         response.append(dict)
         num += 1
     db.close()
