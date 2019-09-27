@@ -693,23 +693,23 @@ def settle_list():
             dict['backAccount'] = row[18]
         # 这里根据用户等级来生成计算公式
         if exp < 150:
-            dict['totalFee'] = (int(row[6] * 7) / 10)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 7) / 10  # 计算金额公式
         elif exp >= 150 and exp < 200:
-            dict['totalFee'] = (int(row[6] * 3) / 4)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 3) / 4  # 计算金额公式
         elif exp >= 200 and exp < 350:
-            dict['totalFee'] = (int(row[6] * 4) / 5)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 4) / 5  # 计算金额公式
         elif exp >= 350 and exp < 500:
-            dict['totalFee'] = (int(row[6] * 81) / 100)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 81) / 100  # 计算金额公式
         elif exp >= 500 and exp < 700:
-            dict['totalFee'] = (int(row[6] * 83) / 100)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 83) / 100  # 计算金额公式
         elif exp >= 700 and exp < 900:
-            dict['totalFee'] = (int(row[6] * 17) / 20)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 17) / 20  # 计算金额公式
         elif exp >= 900 and exp < 1200:
-            dict['totalFee'] = (int(row[6] * 87) / 100)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 87) / 100  # 计算金额公式
         elif exp >= 1200 and exp < 1600:
-            dict['totalFee'] = (int(row[6] * 89) / 100)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 89) / 100  # 计算金额公式
         elif exp >= 1600 and exp < 2100:
-            dict['totalFee'] = (int(row[6] * 19) / 20)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 19) / 20  # 计算金额公式
         else:
             dict['totalFee'] = int(row[6])  # 计算金额公式
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
@@ -776,23 +776,23 @@ def finishList():
             dict['backAccount'] = row[18]
         # 这里根据用户等级来生成计算公式
         if exp < 150:
-            dict['totalFee'] = (int(row[6] * 7) / 10)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 7) / 10  # 计算金额公式
         elif exp >= 150 and exp < 200:
-            dict['totalFee'] = (int(row[6] * 3) / 4)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 3) / 4  # 计算金额公式
         elif exp >= 200 and exp < 350:
-            dict['totalFee'] = (int(row[6] * 4) / 5)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 4) / 5  # 计算金额公式
         elif exp >= 350 and exp < 500:
-            dict['totalFee'] = (int(row[6] * 81) / 100)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 81) / 100  # 计算金额公式
         elif exp >= 500 and exp < 700:
-            dict['totalFee'] = (int(row[6] * 83) / 100)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 83) / 100  # 计算金额公式
         elif exp >= 700 and exp < 900:
-            dict['totalFee'] = (int(row[6] * 17) / 20)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 17) / 20  # 计算金额公式
         elif exp >= 900 and exp < 1200:
-            dict['totalFee'] = (int(row[6] * 87) / 100)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 87) / 100  # 计算金额公式
         elif exp >= 1200 and exp < 1600:
-            dict['totalFee'] = (int(row[6] * 89) / 100)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 89) / 100  # 计算金额公式
         elif exp >= 1600 and exp < 2100:
-            dict['totalFee'] = (int(row[6] * 19) / 20)  # 计算金额公式
+            dict['totalFee'] = (int(row[6]) * 19) / 20  # 计算金额公式
         else:
             dict['totalFee'] = int(row[6])  # 计算金额公式
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
