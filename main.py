@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 # coding:utf-8
 
 from flask import Flask
@@ -13,12 +13,13 @@ from flask import send_from_directory  # 文件下载
 from datetime import timedelta
 # from datetime import datetime
 import json
-import MySQLdb
+import pymysql
 import os
 import random
 import base64
 import gvcode
 from cStringIO import StringIO
+import getopt
 
 import sys
 reload(sys)
@@ -26,7 +27,6 @@ sys.setdefaultencoding('utf8')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '654321'  # 使用session前设置密匙
-# app.config['SECRET_KEY'] = str(os.urandom(16))
 app.config['PREMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # 设置session的过期时间
 
 # 文件上传相关设置
@@ -37,7 +37,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # 初始化数据库
 # TODO:后面考虑把数据库初始化和终止代码提取出来做一个统一的初始化
 def init_db():
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     return cursor
 
@@ -53,9 +53,14 @@ def main():
         return redirect(url_for('login'))
 
 # 登陆主界面
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET'])
 def login():
-    return render_template('login.html')
+    # 确保同一台PC同时只能有一个用户登陆
+    username = session.get('username', None)
+    if username:
+        return render_template('index.html', name=username)
+    else:
+        return render_template('login.html')
 
 @app.route('/')
 def _login():
@@ -66,10 +71,10 @@ def user_login():
     username = request.values.get('username')
     password = request.values.get('password')
     code = request.values.get('code')
-    # 从 session 获取正确验证码 TODO:这里在配置多用户的时候可能会有问题
+    # 从 session 获取正确验证码
     correct_code = session.get('code', None)
     # 从数据库中查找是否存在用户名和密码
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     sql = "select dev_username, dev_passwd from dev where dev_username = '" + username + "'"
     cursor.execute(sql)
@@ -83,11 +88,11 @@ def user_login():
         if dev_passwd != password:
             return jsonify(code=1, msg='密码错误！')
 
-    # 如果可以用户可以正常登陆，将用户名写入session
-    session['username'] = username
-    # 比对用户填写的用户码和正确验证码是否一致
+    # 比对用户填写的验证码和正确验证码是否一致
     if code.lower() != correct_code.lower():
         return jsonify(code=1, msg='验证码错误！')
+
+    session['username'] = username
     db.close()
     return jsonify(code=0)
 
@@ -120,7 +125,7 @@ def checkUsername():
     # 从前端ajax拿到username
     username = request.values.get('username')
     # 连接MySQL数据库并获取到数据库句柄
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     # 拼接SQL语句
     sql = "select dev_username from dev where dev_username = '" + username + "'"
@@ -162,7 +167,7 @@ def user_register():
     newInviteCode = generate_invite_code()
 
     # 连接MySQL数据库并获取到数据库句柄
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
 
     # 检测是否填写邀请码
@@ -230,7 +235,7 @@ def resetPwd():
     # 从前端获取密码
     passwd = request.values.get('password')
     # 连接数据库
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     # 更新数据库中当前用户的密码
     sql = "update dev set dev_passwd = '" + passwd + "'" + " where dev_username = '" + username + "'"
@@ -282,8 +287,9 @@ def logout():
 def templates_main():
     # 从session获取用户名
     username = session.get('username', None)
+
     # 从数据库查找用户名对应的真实姓名和邀请码
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     sql = "select dev_realname, dev_invitecode, dev_exp, dev_order_num from dev where dev_username = '" + username + "'"
     cursor.execute(sql)
@@ -326,14 +332,14 @@ def templates_main():
         l_title = '十级导师'
 
     db.close()
-    return render_template('main.html', toolName=toolname, code=invite_code, level=l_level, title=l_title, order_num=num)
+    return render_template('main.html', toolName=toolname, code=invite_code, level=l_level, title=l_title, order_num=num, integral=exp)
 
 # 文件下载
 # TODO:如果文件名是中文的，这里可能会有问题
 # TODO:如果需要下载的文件是pdf文件，可能需要另作一番处理
 @app.route('/download/<path:filepath>', methods=['GET'])
 def download(filepath):
-    path_pre = "/home/zanda/Desktop/Project/trading_platform/"
+    path_pre = "/root/YAB/trading_platform/"
     filepath = path_pre + filepath
     (dirname, filename) = os.path.split(filepath)
     return send_from_directory(dirname, filename, as_attachment=True)
@@ -358,7 +364,7 @@ def assignList():
     pageNumber = data['pageNumber']
     pageSize = data['pageSize']
     # 连接数据库
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     # 先查询一下一共有多少条订单信息
     sql = "select count(*) from orders"
@@ -410,11 +416,9 @@ def pickOrder():
         6.拼接响应返回给前端
     '''
     order_num = request.values.get('id')
-    # print "id:" + order_num
     username = session.get('username', None)
-    # print "username:" + username
 
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     sql = "select dev_exp from dev where dev_username = " + "'" + username + "'"
     cursor.execute(sql)
@@ -426,14 +430,15 @@ def pickOrder():
     # 更新订单对应表
     sql = "insert into trading(order_num, dev_username) values(" + str(order_num) + ",'" + username + "')"
     cursor.execute(sql)
-    # TODO:这里可能要用异常判断一下commit是否成功
     db.commit()
     # 更新订单表
     sql = "update orders set order_status = '辅导中', order_flag = 1 where order_num = " + str(order_num)
     cursor.execute(sql)
-    # TODO:这里可能要用异常判断一下commit是否成功
     db.commit()
-    # TODO:更新当前用户开发中订单表
+    # 更新总接单数
+    # sql = "update dev set dev_order_num = dev_order_num + 1 where dev_username = " + "'" + username + "'"
+    # cursor.execute(sql)
+    # db.commit()
     db.close()
     # 根据查询结果拼接响应数据格式
     return jsonify(code=0, msg="接单成功！")
@@ -457,7 +462,7 @@ def myOrders():
 
     username = session.get('username', None)
 
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
 
     # 从交易记录表中查出当前用户的订单号
@@ -467,12 +472,17 @@ def myOrders():
     if not result:
         return jsonify(total=0, data=[])
     tmp = []
+    tmp_num = 0
     for row in result:
         tmp.append(int(row[0]))
+        tmp_num += 1
     num_set = tuple(tmp)
     # 从订单表中查出订单的详细信息
     sql = "select * from orders where order_num in " + str(num_set)
-    sql = sql[0:-2]
+    if tmp_num == 1:
+        sql = sql[0:-2]
+    else:
+        sql = sql[0:-1]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
@@ -527,7 +537,7 @@ def finishOrders():
     username = session.get('username', None)
 
     # 连接数据库
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
 
     # 从交易记录表中查出当前用户的订单号
@@ -538,13 +548,18 @@ def finishOrders():
         return jsonify(total=0, data=[])
 
     tmp = []
+    tmp_num = 0
     for row in result:
         tmp.append(int(row[0]))
+        tmp_num += 1
     num_set = tuple(tmp)
 
     # 从订单表中查出订单的详细信息
     sql = "select * from orders where order_num in " + str(num_set)
-    sql = sql[0:-2]
+    if tmp_num == 1:
+        sql = sql[0:-2]
+    else:
+        sql = sql[0:-1]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
@@ -576,7 +591,7 @@ def finishOrders():
         '''
         if row[15] == 0:
             dict['isBillable'] = 0
-        elif row[15] == 1:
+        elif not row[15] or row[15] == 1:
             dict['isBillable'] = 1
         response.append(dict)
         num += 1
@@ -586,7 +601,7 @@ def finishOrders():
 @app.route('/settleRecord/settle/<id>')
 def settle_record(id):
     # 更新订单表中指定id订单的结算状态
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
 
     sql = "update orders set order_appli = 1, order_settlement = 0, order_appli_time = now() where order_num = " + str(id)
@@ -608,9 +623,16 @@ def settle_list():
     # 获取当前用户
     username = session.get('username', None)
 
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
 
+    # 查出当前用户的积分
+    sql = "select dev_exp from dev where dev_username = " + "'" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    exp = result[0]
+
+    # 查出当前用户所接的所有订单的订单号
     sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -618,12 +640,17 @@ def settle_list():
         return jsonify(total=0, data=[])
 
     tmp = []
+    tmp_num = 0
     for row in result:
         tmp.append(int(row[0]))
+        tmp_num += 1
     num_set = tuple(tmp)
 
     sql = "select * from orders where order_num in " + str(num_set)
-    sql = sql[0:-2]
+    if tmp_num == 1:
+        sql = sql[0:-2]
+    else:
+        sql = sql[0:-1]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
@@ -631,20 +658,41 @@ def settle_list():
     response = []
     num = 0
     for row in results:
-        if row[11] == "辅导中" or row[11] == "未完成":
-            continue
-        dict = {}
-        dict['orderId'] = row[0]
-        dict['payType'] = row[16]
-        if dict['payType'] == 1:
-            dict['aliAccount'] = row[17]
-        else:
-            dict['backAccount'] = row[18]
-        dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
-        dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
-        dict['settleStatus'] = row[15]
-        response.append(dict)
-        num += 1
+        # if row[11] == "辅导中" or row[11] == "未完成" or row[11] == "已完成":
+        #     continue
+        if row[13] == 1 and row[15] != 2:  # 如果已经申请并且没有结算
+            dict = {}
+            dict['orderId'] = row[0]
+            dict['payType'] = row[16]
+            if dict['payType'] == 1:
+                dict['aliAccount'] = row[17]
+            else:
+                dict['backAccount'] = row[18]
+            # 这里根据用户等级来生成计算公式
+            if exp < 150:
+                dict['totalFee'] = (int(row[6]) * 3) / 4  # 结算金额计算公式
+            elif exp >= 150 and exp < 200:
+                dict['totalFee'] = (int(row[6]) * 4) / 5
+            elif exp >= 200 and exp < 350:
+                dict['totalFee'] = (int(row[6]) * 81) / 100
+            elif exp >= 350 and exp < 500:
+                dict['totalFee'] = (int(row[6]) * 83) / 100
+            elif exp >= 500 and exp < 700:
+                dict['totalFee'] = (int(row[6]) * 17) / 20
+            elif exp >= 700 and exp < 900:
+                dict['totalFee'] = (int(row[6]) * 87) / 100
+            elif exp >= 900 and exp < 1200:
+                dict['totalFee'] = (int(row[6]) * 89) / 100
+            elif exp >= 1200 and exp < 1600:
+                dict['totalFee'] = (int(row[6]) * 19) / 20
+            elif exp >= 1600 and exp < 2100:
+                dict['totalFee'] = (int(row[6]) * 97) / 100
+            else:
+                dict['totalFee'] = int(row[6])
+            dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
+            dict['settleStatus'] = row[15]  # TODO
+            response.append(dict)
+            num += 1
     db.close()
     return jsonify(total=num, data=response)
 
@@ -659,8 +707,14 @@ def finishList():
     # 获取当前用户
     username = session.get('username', None)
 
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
+
+    # 查出当前用户的积分
+    sql = "select dev_exp from dev where dev_username = " + "'" + username + "'"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    exp = result[0]
 
     sql = "select order_num from trading where dev_username = '" + username + "'"
     cursor.execute(sql)
@@ -669,12 +723,17 @@ def finishList():
         return jsonify(total=0, data=[])
 
     tmp = []
+    tmp_num = 0
     for row in result:
         tmp.append(int(row[0]))
+        tmp_num += 1
     num_set = tuple(tmp)
 
     sql = "select * from orders where order_num in " + str(num_set)
-    sql = sql[0:-2]
+    if tmp_num == 1:
+        sql = sql[0:-2]
+    else:
+        sql = sql[0:-1]
     sql = sql + ")"
     cursor.execute(sql)
     results = cursor.fetchall()
@@ -691,11 +750,30 @@ def finishList():
             dict['aliAccount'] = row[17]
         else:
             dict['backAccount'] = row[18]
-        dict['totalFee'] = (int(row[6]) * 8) / 10  # 结算金额计算公式
+        # 这里根据用户等级来生成计算公式
+        if exp < 150:
+            dict['totalFee'] = (int(row[6]) * 3) / 4  # 结算金额计算公式
+        elif exp >= 150 and exp < 200:
+            dict['totalFee'] = (int(row[6]) * 4) / 5
+        elif exp >= 200 and exp < 350:
+            dict['totalFee'] = (int(row[6]) * 81) / 100
+        elif exp >= 350 and exp < 500:
+            dict['totalFee'] = (int(row[6]) * 83) / 100
+        elif exp >= 500 and exp < 700:
+            dict['totalFee'] = (int(row[6]) * 17) / 20
+        elif exp >= 700 and exp < 900:
+            dict['totalFee'] = (int(row[6]) * 87) / 100
+        elif exp >= 900 and exp < 1200:
+            dict['totalFee'] = (int(row[6]) * 89) / 100
+        elif exp >= 1200 and exp < 1600:
+            dict['totalFee'] = (int(row[6]) * 19) / 20
+        elif exp >= 1600 and exp < 2100:
+            dict['totalFee'] = (int(row[6]) * 97) / 100
+        else:
+            dict['totalFee'] = int(row[6])
         dict['applyTime'] = str(row[14])  # 对时间戳做一个处理
-        dict['settleStatus'] = row[15]
+        dict['settleStatus'] = 1
         dict['finishTime'] = str(row[19])  # 对时间戳做一个处理
-        # dict['finishTime'] = "2019-09-15 20:00:00"
         response.append(dict)
         num += 1
     db.close()
@@ -710,7 +788,7 @@ def myInvite():
     # 获取当前用户
     username = session.get('username', None)
 
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
 
     sql = "select dev_id from dev where dev_username = " + "'" + username + "'"
@@ -727,20 +805,11 @@ def myInvite():
     for row in results:
         dict = {}
         dict['realName'] = row[0]
-        dict['createTime'] = row[1]
+        dict['createTime'] = str(row[1])
         response.append(dict)
         num += 1
     db.close()
     return jsonify(total=num, data=response)
-
-# @app.route('/myReward.html')
-# def templates_myreword():
-#     return render_template('myReward.html')
-#
-# # TODO
-# @app.route('/myReward', methods=['POST'])
-# def myReward():
-#     pass
 
 # 消息通知
 @app.route('/list.html')
@@ -761,7 +830,7 @@ def notice_list():
     pageNumber = data['pageNumber']
     pageSize = data['pageSize']
     # 连接数据库
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     # 先查询一下一共有多少条系统通知
     sql = "select count(*) from sys_notice"
@@ -796,7 +865,7 @@ def notice_read(id):
         2.修改数据库中对应订单的'阅读状态'字段
         3.将结果拼接成json格式发送给前端
     '''
-    db = MySQLdb.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
+    db = pymysql.connect("localhost", "root", "nihao.", "itkim", charset='utf8')
     cursor = db.cursor()
     sql = "update sys_notice set status=1 where id = " + str(id)
     cursor.execute(sql)
@@ -827,6 +896,11 @@ def page_not_found(error):
     return render_template('401.html'), 404
 #######################################
 
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    d_port = 8000
+    opts, args = getopt.getopt(sys.argv[1:], '-p')
+    if opts:
+        d_port = int(args[0])
+    app.run(host='0.0.0.0', port=d_port)
 

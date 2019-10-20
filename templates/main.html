@@ -6,7 +6,7 @@
 	<title></title>
 	<meta name="keywords" content="">
 	<meta name="description" content="">
-	<link rel="shortcut icon" href="https://www.tutorzzz.com/favicon.ico">
+	<link rel="shortcut icon" href="static/images/favicon.ico">
 	<link href="static/css/bootstrap.min.css" rel="stylesheet">
 	<link href="static/css/font-awesome.css" rel="stylesheet">
 	<link href="static/css/bootstrap-table.min.css" rel="stylesheet">
@@ -141,17 +141,15 @@
                         </div>
                         <!-- /.col -->
                         <div class="col-sm-6 border-right">
+                        	
                             <div class="description-block">
                                 <h5 class="description-header">称号</h5>
                                 <span class="description-text">{{title}}</span>
                             </div>
+                            
                             <!-- /.description-block -->
                         </div>
-                        <div class="col-sm-12">
-                            <div class="layui-progress layui-progress-big" lay-showpercent="yes">
-                                <div class="layui-progress-bar" lay-percent="100/150" style="width: 66.6667%;"><span class="layui-progress-text">100/150</span></div>
-                            </div>
-                        </div>
+                      	
                         <!-- /.col -->
                         <div class="col-sm-12" style="margin-top: 2rem">
                             <ul class="list-group">
@@ -159,21 +157,19 @@
                                   <span class="badge">{{order_num}}</span>
                                     总接单数
                                 </li>
-                                <li class="list-group-item">
-                                    <span class="badge">0</span>
-                                    本周接单数
+                            	 <li class="list-group-item">
+                                 <span class="badge">{{integral}}</span>
+                                   积分
                                 </li>
-                                <li class="list-group-item">
-                                    <span class="badge">0</span>
-                                    上周接单数
-                                </li>
+                               
 
                             </ul>
                         </div>
                         <div class="col-sm-12 text-center">
                             <a class="J_menuItem btn btn-primary" href="/assignList.html"><span>立即接单</span></a>
-                            <button class="btn btn-warning copy" url="192.168.204.129:5000/register"><span>邀请链接</span></button>
+                            <button class="btn btn-warning copy" url="kimip.top:8000/register"><span>邀请链接</span></button>
                         </div>
+
                     </div>
                     <!-- /.row -->
                 </div>
@@ -218,10 +214,8 @@
                     <hr>
                     <h2>邀请规则</h2>
                     <ul>
-                        <li>1.<span style="color: red">邀请好友注册,将获得好友前5单的邀请奖励(1级邀请获得<strong>10%</strong>的成单金额奖励，2级邀请获得<strong>2%</strong>的成单金额奖励)</span>
+                        <li><span style="color: red">每邀请一个开发用户，积分+5</span>
                         </li>
-                        <li>2.邀请工程师完成订单结算后，可申请邀请奖励结算。</li>
-                        <li>3.开通邀请权限需要联系管理员-微信号<span style="color: red">ITKIM</span></li>
                     </ul>
 
                     <hr>
@@ -233,88 +227,88 @@
                                 <th>等级</th>
                                 <th>所需积分</th>
                                 <th>退单扣分</th>
-                                <th>每单额外固定金额</th>
-                                <th>每单额外提成</th>
+                                <th>平台服务费</th>
+                              
                             </tr>
                             <tr>
                                 <td>一级导师</td>
                                 <td>1</td>
                                 <td>0</td>
                                 <td>20</td>
-                                <td>0</td>
-                                <td>0%</td>
+                                <td>25%</td>
+                              
                             </tr>
                             <tr>
                                 <td>二级导师</td>
                                 <td>2</td>
                                 <td>150</td>
                                 <td>20</td>
-                                <td>0</td>
-                                <td>0%</td>
+                                <td>20%</td>
+                           
                             </tr>
                             <tr>
                                 <td>三级导师</td>
                                 <td>3</td>
                                 <td>200</td>
                                 <td>20</td>
-                                <td>10</td>
-                                <td>1%</td>
+                                <td>19%</td>
+                              
                             </tr>
                             <tr>
                                 <td>四级导师</td>
                                 <td>4</td>
                                 <td>350</td>
                                 <td>50</td>
-                                <td>10</td>
-                                <td>2%</td>
+                                <td>17%</td>
+                               
                             </tr>
                             <tr>
                                 <td>五级导师</td>
                                 <td>5</td>
                                 <td>500</td>
                                 <td>50</td>
-                                <td>10</td>
-                                <td>3%</td>
+                                <td>15%</td>
+                              
                             </tr>
                             <tr>
                                 <td>六级导师</td>
                                 <td>6</td>
                                 <td>700</td>
                                 <td>100</td>
-                                <td>20</td>
-                                <td>5%</td>
+                                <td>13%</td>
+                           
                             </tr>
                             <tr>
                                 <td>七级导师</td>
                                 <td>7</td>
                                 <td>900</td>
                                 <td>100</td>
-                                <td>20</td>
-                                <td>6%</td>
+                                <td>11%</td>
+                              
                             </tr>
                             <tr>
                                 <td>八级导师</td>
                                 <td>8</td>
                                 <td>1200</td>
                                 <td>100</td>
-                                <td>20</td>
-                                <td>7%</td>
+                                <td>5%</td>
+                           
                             </tr>
                             <tr>
                                 <td>九级导师</td>
                                 <td>9</td>
                                 <td>1600</td>
                                 <td>100</td>
-                                <td>30</td>
-                                <td>8%</td>
+                                <td>3%</td>
+                             
                             </tr>
                             <tr>
                                 <td>十级导师</td>
                                 <td>10</td>
                                 <td>2100</td>
                                 <td>100</td>
-                                <td>50</td>
-                                <td>10%</td>
+                                <td>0%</td>
+                           
                             </tr>
                         </tbody></table>
                     </div>
@@ -356,6 +350,7 @@
     //注意进度条依赖 element 模块，否则无法进行正常渲染和功能性操作
     layui.use('element', function () {
         var element = layui.element;
+        element.init();
     });
 </script>
 
